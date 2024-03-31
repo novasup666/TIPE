@@ -8,6 +8,7 @@ Présente une implémentation d'un algorithme de recherche de chemin le plus lar
 Utilisé afinde modélier des potentiels choix d'itinéraires piétons autour du stade de france lors de grands evenements sportifs.
 Publié:
 - Pas grand chose
+  
 À venir:
 - implémentation des algorithmes
 - graphe
@@ -19,6 +20,7 @@ of max flow.
 These are used to determine some itineraries for visitors of the Stade de France, Saint-Denis, France during wide sports events like the 2024 Paris Olympic games.
 Published:
 - Not much
+
 Incomming:
 - the algorithm
 - the flow network
