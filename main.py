@@ -59,8 +59,3 @@ class graph:
 def dijkstra (g,x):
     bag = heap()
     bag.push(0,x)
-
-def main():
-    
-
-main()
