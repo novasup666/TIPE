@@ -1,7 +1,8 @@
 TIPE 
-(French CPGE's project)
+(French CPGE project)
+(CPGE: Classe Préparatoire aux Grandes Ecoles: 2 intensives years to prepare french engineering schools entrance exams)
 
-IN PYTHON
+PYTHON
 
 En français:
 
