@@ -1,4 +1,7 @@
-(d,a,l)
+(x,y,w)
+x: depart, starting point
+y: arrivée, destination
+w: poids (une capacité enfait, exprimée en nombre de voies disponibles), weight (a flow capacity in fact, in number of lanes) 
 
 [(s,0,4);
 (s,1,3);
