@@ -13,7 +13,7 @@ Publié:
 - Des classes utilitaires (heap et graphs)
 - Le graphe de flot
 
-  
+
 À venir:
 - implémentation des algorithmes
 - résultats experimentaux
