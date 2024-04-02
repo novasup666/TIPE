@@ -15,7 +15,7 @@ Utilisé afinde modéliser des potentiels choix d'itinéraires piétons autour d
 Publié:
 - Des classes utilitaires (heap et graphs)
 - Le graphe de flot
-
+- implementation partielle (non testée de dijkstra)
 
 À venir:
 - implémentation des algorithmes
@@ -32,6 +32,7 @@ These are used to determine some itineraries for visitors of the Stade de France
 Published:
 - Utilitary tools (heap & graph classes)
 - the flow network
+- partial implementation of Dijkstra (not tested for now)
 
 Incomming:
 - the algorithms
