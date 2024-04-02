@@ -4,6 +4,9 @@ TIPE
 
 PYTHON
 
+/!\ L'implémentation peut paraitre lourde / peu efficace en certains point, rappelons son objectif : implémenter aisément et lisiblement les algorithmes considérés, le code étant censé être fourni en version papier au jury du TIPE.
+
+
 En français:
 
 Présente une implémentation d'un algorithme de recherche de chemin le plus large basé sur Dijkstra, ainsi qu'une implémentation de Edmond-Karp.
@@ -20,8 +23,10 @@ Publié:
 
 In english:
 
-This project present a modified implementation of Dijkstra's algorithm to find a widest path in a flow network, as well as an implementation of Edmond-Karp's algorithm
-of max flow. 
+/!\ The code might seem heavy or unefficient in some aspect but you should keep in mind that the code mainly needs to be easyily manipulated and read (as it should be printed for exam assessors).
+
+This project present a modified implementation of Dijkstra's algorithm to find a widest path in a flow network, as well as an implementation of Edmond-Karp's algorithmof max flow. 
+
 These are used to determine some itineraries for visitors of the Stade de France, Saint-Denis, France during wide sports events like the 2024 Paris Olympic games.
 
 Published:
