@@ -74,7 +74,23 @@ class graph:
 DATA = [('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',9,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4) ]
 
 
-def dijkstra (g,node, destination):
+def rebuild_path(g,partial, start,end):
+    path = []
+    current = end
+    treated = set()
+    while current !=  start :
+        treated.add(current)
+        path.append(current)
+        neighbours = g.edges(current)
+        candidates = []
+        for y,w in neighbours:
+            if y not in treated and y in partial:
+                candidates.append((min(w,partial[y]),y))
+        _,next=max(candidates)
+        current = next
+    return path.reverse()
+
+def dijkstra (g, start, end):
     """
     Version adaptée de Dijkstra au probleme considéré : chemin le plus
     large: maximum des minimum des capacités des arètes.
@@ -83,24 +99,24 @@ def dijkstra (g,node, destination):
     widest-path problem: looking for the paht with the biggest of 
     minimum capacity along its way.
     """
+    node =  start
     bag = max_heap()
     bag.push(0,node)
     partial = {}
-    partial[node] = ([],0)
+    partial[node] = 0
     treated = set()
-    while node!=destination : 
+    while end not in treated: 
         (capa,node) = bag.pop()
         treated.add(node)
-        partial_path, partial_capa = partial[node]
         edges = g.edges(node)
         for (y,w) in edges:
             new_capa = min(capa,w)
-            if y not in treated and ( y not in partial or new_capa > partial[y][1]):
+            if y not in treated and ( y not in partial or new_capa > partial[y]):
                 bag.push(new_capa,y)
-                new_path = partial_path.copy().append(y)
-                partial[y] = (new_path,new_capa)
+                partial[y] = new_capa
 
-    return partial[destination]
+    widest_path = rebuild_path (g, partial, start, end)
+    return widest_path
 
 def main():
     g = graph
