@@ -60,24 +60,35 @@ class max_heap:
         return res
 
 class graph:
-    def __init__(self,n) -> None:
+    def __init__(self,n,source,puit) -> None:
         self.size = n
         self.matrix = [[0 for _ in range(n)] for _ in range (n)]
-        self.adjl = []
+        self.adj = []
+        self.s = source
+        self.t = puit
+    def weight(self,x,y):
+        return self.matrix[x][y]
     
     def add_edge(self,x,y,w):
-        if x not in self.graph :
-            self.graph[x] = {}
-        self.adjl[x].append(y)
+        if self.weight(x,y) == 0:
+            self.adj[x].append(y)
         self.matrix[x][y] = w
 
+    def update_edge(self,x,y,v):
+        assert(self.weight(x,y)!=0)
+        if v == 0:
+            self.adj[x].remove(y)
+        self.matrix[x][y] = v
+
     def edges(self,x):
-        return self.graph[x]
+        return [(y, self.weight(x,y)) for y in self.adj[x]]
     
     def custom_copy(self):
         g = graph.init(self.size)
-        g.graph = self.graph.copy()
+        g.matrix = [t.copy() for t in self.matrix]
+        g.adj = [t.copy() for t in self.adj]
         return g
+    
 
 
     
@@ -132,38 +143,68 @@ def widest_path (g, start, end):
     return widest_path
 
 def init_ag(g) : 
+    """
+    Construit le graphe des augmentations
+    """
     return g.custom_copy()
+
+def update_ag(ag,ap):
+    """
+    Met le graphe des augmentations à jour en soustrayant aux aretes du chemin augmentant
+    considéré le supplément de flux.
+    """
+    for(x,y,dphi) in ap:
+        ag.update(x, y, ag.weight(x,y)-dphi)
+
+
 
 def init_flow(g):
     return graph.init(g.size)
-    
 
 def update_flow(f,p):
     for (x,y,dphi) in p:
-        for (v,phi) in p.edges(x):
-            if y == v :
+        f.update(x, y, f.weight(x,y)+dphi)
 
+def find_path(ag):
+    """
+    Cherche et (parfois) trouve un chemin augmentant pour le flot dans ag
 
+    Renvoie (b,ap)
+    -b indiquant si un chemin augmentant pour le flux à été trouvé
+    -ap le chemin, [] si n'existe pas.
 
-def update_ag(ag,ap):
-    """où an : augmenting graph (de type network)
-            ap : augmenting path
     """
 
-def edmond_karp(g):
-    ag = init_ag(g)
+
+
+
+def edmond_karp(g, source, puit):
+    ag = init_ag(g,source,puit)
     (ap,found) = find_path(ag)
     while found:
         update_ag(ag,ap)
         update_flow(f,ap)
         (ap,found) = find_path(ag)
 
+def rep(x,i,sigma):
+    if x not in sigma:
+        sigma[x] = i
+    return sigma[x]
+
 def main():
+    """
+    rep et sigma permettent de traiter les trous dans la numérotation des noeuds et l'utilisation de s
+    simplifie la vie.
+    """
+
     g = graph(N)
+    sigma = {}
     for i in range(N):
         x,y,w = DATA[i]
-        g.add_edge(x,y,w)
-        g.add_edge(y,x,w)
+        rx = rep(x,i,sigma)
+        ry = rep(y,i,sigma)
+        g.add_edge(rx,ry,w)
+        g.add_edge(ry,rx,w)
     p = widest_path(g,'s',1000)
     print(p)
     
