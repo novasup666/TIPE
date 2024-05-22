@@ -1,4 +1,4 @@
-
+import queue as q
 
 class max_heap:
     """
@@ -60,12 +60,13 @@ class max_heap:
         return res
 
 class graph:
-    def __init__(self,n,source,puit) -> None:
+    def __init__(self,n) -> None:
         self.size = n
         self.matrix = [[0 for _ in range(n)] for _ in range (n)]
-        self.adj = []
-        self.s = source
-        self.t = puit
+        self.adj = [[]for _ in range(n)]
+        self.s = -1
+        self.t = -1
+
     def weight(self,x,y):
         return self.matrix[x][y]
     
@@ -87,14 +88,12 @@ class graph:
         g = graph.init(self.size)
         g.matrix = [t.copy() for t in self.matrix]
         g.adj = [t.copy() for t in self.adj]
-        return g
-    
-
-
-    
+        g.s = self.s
+        g.t = self.t
+        return g   
 
 DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',9,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4) ]
-N = len(DATA)
+N = len(set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA}))
 
 def rebuild_path(g,partial, start,end):
     path = []
@@ -126,7 +125,7 @@ def widest_path (g, start, end):
     node =  start
     bag = max_heap()
     bag.push(float("inf"),node)
-    partial = {}
+    partial = [float("inf") for _ in range(g.size)]
     partial[node] = float("inf")
     treated = set()
     while end not in treated: 
@@ -148,15 +147,13 @@ def init_ag(g) :
     """
     return g.custom_copy()
 
-def update_ag(ag,ap):
+def update_ag(ag,ap,dphi):
     """
     Met le graphe des augmentations à jour en soustrayant aux aretes du chemin augmentant
     considéré le supplément de flux.
     """
-    for(x,y,dphi) in ap:
+    for(x,y) in ap:
         ag.update(x, y, ag.weight(x,y)-dphi)
-
-
 
 def init_flow(g):
     return graph.init(g.size)
@@ -170,23 +167,34 @@ def find_path(ag):
     Cherche et (parfois) trouve un chemin augmentant pour le flot dans ag
 
     Renvoie (b,ap)
-    -b indiquant si un chemin augmentant pour le flux à été trouvé
-    -ap le chemin, [] si n'existe pas.
+    -b; booleen indiquant si un chemin augmentant pour le flux à été trouvé
+    -ap: edge list le chemin, [] si n'existe pas.
 
-    """
+    """"""
+    bag = q.Queue()
+    bag.put(ag.s)
+    path = []
+    dphi = float("inf")
+    vus = set()
+    partial = [float('inf') for _ in range(g.size)]
 
+    while not bag.empty():
+        current = bag.get()
+        aretes = ag.edges(current)
+        for y,w in aretes:
+            if 
+"""
 
-
-
-def edmond_karp(g, source, puit):
-    ag = init_ag(g,source,puit)
-    (ap,found) = find_path(ag)
+def edmond_karp(g):
+    ag = init_ag(g)
+    (ap,dphi,found) = find_path(ag)
+    f = init_flow(g)
     while found:
-        update_ag(ag,ap)
+        update_ag(ag,ap,dphi)
         update_flow(f,ap)
         (ap,found) = find_path(ag)
 
-def rep(x,i,sigma):
+def rep(x,sigma,i=0):
     if x not in sigma:
         sigma[x] = i
     return sigma[x]
@@ -201,11 +209,15 @@ def main():
     sigma = {}
     for i in range(N):
         x,y,w = DATA[i]
-        rx = rep(x,i,sigma)
-        ry = rep(y,i,sigma)
+        rx = rep(x,sigma, i)
+        ry = rep(y,sigma,i)
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
-    p = widest_path(g,'s',1000)
+    g.s = rep("s",sigma)
+    g.t = None
+    p = widest_path(g,rep('s',sigma),rep(1000,sigma))
+    g.add_edge(rep(1000,sigma),rep("t",sigma), float("inf"))
+
     print(p)
     
 main()
