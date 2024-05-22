@@ -93,24 +93,20 @@ class graph:
         return g   
 
 DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',9,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4) ]
-N = len(set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA}))
+
+Vertices = set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA})
+N = len(Vertices)
 
 def rebuild_path(g,partial, start,end):
     path = []
     current = end
     treated = set()
     while current !=  start :
-        treated.add(current)
-        path.append(current)
-        neighbours = g.edges(current)
-        candidates = []
-        for y,w in neighbours:
-            if y not in treated and y in partial:
-                candidates.append((min(w,partial[y]),y))
-        _,next=max(candidates)
+        next = partial[current][0]
+        path.append(next)
         current = next
-    path.append(start)
     path.reverse()
+    path.append(end)
     return path
 
 def widest_path (g, start, end):
@@ -125,7 +121,7 @@ def widest_path (g, start, end):
     node =  start
     bag = max_heap()
     bag.push(float("inf"),node)
-    partial = [float("inf") for _ in range(g.size)]
+    partial = [(-1,0) for _ in range(g.size)]
     partial[node] = float("inf")
     treated = set()
     while end not in treated: 
@@ -134,9 +130,10 @@ def widest_path (g, start, end):
         edges = g.edges(node)
         for (y,w) in edges:
             new_capa = min(capa,w)
-            if y not in treated and ( y not in partial or new_capa > partial[y]):
+            if y not in treated and ( partial[y][1] == 0  or new_capa > partial[y][1]):
                 bag.push(new_capa,y)
-                partial[y] = new_capa
+                partial[y] = (node,new_capa) # garder node permet de se souvenir du meilleur père et de simplifier rebuild_path
+
 
     widest_path = rebuild_path (g, partial, start, end)
     return widest_path
@@ -144,6 +141,7 @@ def widest_path (g, start, end):
 def init_ag(g) : 
     """
     Construit le graphe des augmentations
+    Builds the augmenting graph
     """
     return g.custom_copy()
 
@@ -151,6 +149,7 @@ def update_ag(ag,ap,dphi):
     """
     Met le graphe des augmentations à jour en soustrayant aux aretes du chemin augmentant
     considéré le supplément de flux.
+    Updates the augmenting graph regarding the evolution dphi of flux.
     """
     for(x,y) in ap:
         ag.update(x, y, ag.weight(x,y)-dphi)
@@ -166,9 +165,16 @@ def find_path(ag):
     """
     Cherche et (parfois) trouve un chemin augmentant pour le flot dans ag
 
-    Renvoie (b,ap)
+    Renvoie (b,ap,dphi)
     -b; booleen indiquant si un chemin augmentant pour le flux à été trouvé
     -ap: edge list le chemin, [] si n'existe pas.
+
+    Search and (sometime) finds an augmenting path for the flux in the augmenting graph
+
+    Returns (b,ap,dphi):
+    - b: boolean indicating wheter or not the augmenting path has been found.
+    - ap: edge (int) list, the path itself
+    - dphi: int :  the change of flux
 
     """"""
     bag = q.Queue()
@@ -194,10 +200,6 @@ def edmond_karp(g):
         update_flow(f,ap)
         (ap,found) = find_path(ag)
 
-def rep(x,sigma,i=0):
-    if x not in sigma:
-        sigma[x] = i
-    return sigma[x]
 
 def main():
     """
@@ -207,18 +209,24 @@ def main():
 
     g = graph(N)
     sigma = {}
-    for i in range(N):
+    i = 0
+    for v in Vertices:
+        sigma[v] = i
+        i+=1
+    for i in range(len(DATA)):
         x,y,w = DATA[i]
-        rx = rep(x,sigma, i)
-        ry = rep(y,sigma,i)
+        rx = sigma[x]
+        ry = sigma[y]
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
-    g.s = rep("s",sigma)
+    g.s = sigma["s"]
     g.t = None
-    p = widest_path(g,rep('s',sigma),rep(1000,sigma))
-    g.add_edge(rep(1000,sigma),rep("t",sigma), float("inf"))
-
-    print(p)
+    rho = {v:k for (k,v) in sigma.items()}
+    print(47,rho[47])
+    print([(y,rho[y], c) for y,c in g.edges(47)])
+    
+    p = widest_path(g,sigma["s"],sigma[40])
+    print([rho[e] for e in p])
     
 main()
 
