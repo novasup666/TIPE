@@ -73,7 +73,7 @@ class graph:
     def add_edge(self,x,y,w):
         if self.weight(x,y) == 0:
             self.adj[x].append(y)
-        self.matrix[x][y] = w
+        self.matrix[x][y] += w
 
     def update_edge(self,x,y,v):
         assert(self.weight(x,y)!=0)
