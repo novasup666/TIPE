@@ -17,10 +17,11 @@ Publié:
 - Le graphe de flot
 - implementation definitive (hm hm) de Dijkstra
 - implémentation partielle de Edmond-karp
+- La fin d'Edmond-Karp
 
 À venir:
-- La fin d'Edmond-Karp
 - résultats experimentaux
+- Peut-etre une GUI(ou au moins un truc pour afficher les resultats)
 
 In english:
 
@@ -34,8 +35,9 @@ Published:
 - Utilitary tools (heap & graph classes)
 - the flow network
 - ultimate (hm hm) implementation of Dijkstra 
+- finishing edmond karp
 
 Incomming:
-- finishing edmond karp
 - the results
+- Maybe a GUI (or at least a graph factory)
 
