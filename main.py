@@ -72,13 +72,14 @@ class graph:
     
     def add_edge(self,x,y,w):
         # directed edges
+        assert(w!=0)
         if self.weight(x,y) == 0:
             self.adj[x].append(y)
         self.matrix[x][y] += w
 
     def update_edge(self,x,y,v):
-        assert(self.weight(x,y)!=0)
         if v == 0:
+            self.matrix[x][y] = v
             self.adj[x].remove(y)
         if v>0:
             self.matrix[x][y] = v
@@ -104,7 +105,6 @@ N = len(Vertices)
 def rebuild_path(g,partial, start,end):
     path = []
     current = end
-    treated = set()
     while current !=  start :
         next = partial[current][0]
         path.append(next)
@@ -126,7 +126,7 @@ def widest_path (g, start, end):
     bag = max_heap()
     bag.push(float("inf"),node)
     partial = [(-1,0) for _ in range(g.size)]
-    partial[node] = float("inf")
+    partial[node] = (float("inf"), node)
     treated = set()
     while end not in treated: 
         (capa,node) = bag.pop()
@@ -150,15 +150,19 @@ def init_ag(g,sinks) :
     On ajoutera des arcs de capacités infinies entre t (un noeud virtuel) et les differents points de sorties réels
     We will add to ag edges of infinite capacity between t (a virtual sink node) and the different real sink nodes
     """
-    n = g.size
-    ag = g.custom_copy()
-    ag.matrix = [row+[0] for row in ag.matrix]
-    ag.matrix.append([0 for _ in range(n +1)])
-    ag.adj.append([])
-    ag.size = n+1
-    ag.t = n
-    for s in sinks:
-        ag.add_edge (s,ag.t, float("inf"))
+    if sinks != None:
+        n = g.size
+        ag = g.custom_copy()
+        ag.matrix = [row+[0] for row in ag.matrix]
+        ag.matrix.append([0 for _ in range(n +1)])
+        ag.adj.append([])
+        ag.size = n+1
+        ag.t = n
+        ag.s = g.s
+        for s in sinks:
+            ag.add_edge (s,ag.t, float("inf"))
+    else:
+        ag = g.custom_copy()
     return ag
 
 def update_ag(ag,ap,dphi):
@@ -170,11 +174,11 @@ def update_ag(ag,ap,dphi):
     """
     n = len(ap)
 
-    for i in range(0,n):
+    for i in range(1,n):
         x = ap[i-1]
         y = ap[i]
         ag.update_edge(x, y, ag.weight(x,y)-dphi)
-        ag.update_edge(y, x, ag.weight(x,y)+dphi)
+        ag.update_edge(y, x, ag.weight(y,x)+dphi)
     
         
 def init_flow(g):
@@ -182,12 +186,12 @@ def init_flow(g):
 
 def update_flow(f,ap,dphi):
     n = len(ap)
-    for i in range(1,n-1):
+    for i in range(1,n):
         x = ap[i-1]
         y = ap[i]
         f_inverse = f.weight(y,x)
         diff = dphi - f_inverse
-        f.update_edge(x,y,diff)
+        f.add_edge(x,y,diff)
 
 def find_path(ag):
     """
@@ -212,7 +216,6 @@ def find_path(ag):
     dphi = float("inf")
     vus = set()
     partial = [(-1,float('inf')) for _ in range(ag.size)]
-
     while not bag.empty():
         current = bag.get()
         dphi = partial[current][1]
@@ -222,21 +225,25 @@ def find_path(ag):
             if y not in vus:
                 bag.put(y)
                 partial[y] = (current,min(w,dphi))
-    print(ag.s)
-    if partial[ag.t] != -1 :
+    if partial[ag.t][0] != -1 :
         return (True,rebuild_path(ag,partial,ag.s,ag.t),partial[ag.t][1])
     else:
-        return (False, None)
+        return (False, None, 0)
+def printmat(m):
+    for r in m : print(r,"\n")
+
 
 def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
+
     while found:
         update_ag(ag,ap,dphi)
-        update_flow(f,ap)
-        (ap,found) = find_path(ag)
+        update_flow(f,ap,dphi)
+        (found,ap,dphi) = find_path(ag)
     return f 
+
 
 
 def main():
@@ -261,11 +268,37 @@ def main():
     g.s = sigma["s"]
     fin = 40
     g.t = None
+    global rho
     rho = {v:k for (k,v) in sigma.items()}    
+    
     p = widest_path(g,sigma["s"],sigma[fin])
     print(f"The widest path between s and {fin}")
     print([rho[e] for e in p])
-    f = edmond_karp(g,[sigma[1000],sigma[1001],sigma[1002]])
-    print(f.matrix)
+    f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
+    """
+    ex = graph(7)
+    ex.matrix = [
+        [0,5,15,0,0,0,0],
+        [0,0,0,0,7,0,0],
+        [0,0,0,3,0,12,0],
+        [0,6,0,0,0,0,2],
+        [0,0,0,0,0,0,8],
+        [0,0,0,5,0,0,5],
+        [0,0,0,0,0,0,0],                
+    ]
+    ex.adj = [
+        [1,2],
+        [4],
+        [3,5],
+        [1,6],
+        [6],
+        [3,6],
+        []
+    ]
+    ex.s = 0;
+    ex.t = 6;
+    f = edmond_karp(ex,None)
+    printmat(f.matrix)
+    #"""
 main()
 
