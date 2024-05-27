@@ -71,6 +71,7 @@ class graph:
         return self.matrix[x][y]
     
     def add_edge(self,x,y,w):
+        # directed edges
         if self.weight(x,y) == 0:
             self.adj[x].append(y)
         self.matrix[x][y] += w
@@ -79,8 +80,11 @@ class graph:
         assert(self.weight(x,y)!=0)
         if v == 0:
             self.adj[x].remove(y)
-        self.matrix[x][y] = v
-
+        if v>0:
+            self.matrix[x][y] = v
+        else:
+            self.matrix[y][x] = -v
+            
     def edges(self,x):
         return [(y, self.weight(x,y)) for y in self.adj[x]]
     
@@ -138,67 +142,98 @@ def widest_path (g, start, end):
     widest_path = rebuild_path (g, partial, start, end)
     return widest_path
 
-def init_ag(g) : 
+def init_ag(g,sinks) : 
     """
     Construit le graphe des augmentations
     Builds the augmenting graph
+
+    On ajoutera des arcs de capacités infinies entre t (un noeud virtuel) et les differents points de sorties réels
+    We will add to ag edges of infinite capacity between t (a virtual sink node) and the different real sink nodes
     """
-    return g.custom_copy()
+    n = g.size
+    ag = g.custom_copy()
+    ag.matrix = [row for row in ag.matrix]
+    ag.matrix.append([0 for _ in range ( n +1)])
+    g.size = n+1
+    g.t = n
+    for s in sinks:
+        ag.add_edge (s,g.t, float("inf"))
+    return ag
 
 def update_ag(ag,ap,dphi):
     """
     Met le graphe des augmentations à jour en soustrayant aux aretes du chemin augmentant
     considéré le supplément de flux.
     Updates the augmenting graph regarding the evolution dphi of flux.
+    Pour chaque arete emprunté la capacité restante est réduite de dphi et la capacité restante de l'arc inverse est augmentée de 1
     """
-    for(x,y) in ap:
-        ag.update(x, y, ag.weight(x,y)-dphi)
-
+    n = len(ap)
+    ag.update(x, y, ag.weight(ap[0],ap[1])-dphi)
+    for i in range(2,n-1):
+        x = ap[i-1]
+        y = ap[i]
+        ag.update_edge(x, y, ag.weight(x,y)-dphi)
+        ag.update_edge(y, x, ag.weight(x,y)+dphi)
+        
 def init_flow(g):
     return graph.init(g.size)
 
-def update_flow(f,p):
-    for (x,y,dphi) in p:
-        f.update(x, y, f.weight(x,y)+dphi)
+def update_flow(f,ap,dphi):
+    n = len(ap)
+    for i in range(1,n-1):
+        x = ap[i-1]
+        y = ap[i]
+        f_inverse = f.weight(y,x)
+        diff = dphi - f_inverse
+        f.update_edge(x,y,diff)
 
 def find_path(ag):
     """
-    Cherche et (parfois) trouve un chemin augmentant pour le flot dans ag
+    Cherche et (parfois) trouve le chemin augmentant le plus court pour le flot dans ag
 
     Renvoie (b,ap,dphi)
     -b; booleen indiquant si un chemin augmentant pour le flux à été trouvé
     -ap: edge list le chemin, [] si n'existe pas.
 
-    Search and (sometime) finds an augmenting path for the flux in the augmenting graph
+    On considère le poids de chaque rue comme unitaire 
+
+    Looks for and (sometime) finds the shortest augmenting path for the flux in the augmenting graph
 
     Returns (b,ap,dphi):
     - b: boolean indicating wheter or not the augmenting path has been found.
     - ap: edge (int) list, the path itself
     - dphi: int :  the change of flux
 
-    """"""
+    """
     bag = q.Queue()
     bag.put(ag.s)
-    path = []
     dphi = float("inf")
     vus = set()
-    partial = [float('inf') for _ in range(g.size)]
+    partial = [(-1,float('inf')) for _ in range(ag.size)]
 
     while not bag.empty():
         current = bag.get()
+        dphi = partial[current]
         aretes = ag.edges(current)
+        vus.add(current)
         for y,w in aretes:
-            if 
-"""
+            if y not in vus:
+                bag.put(y)
+                partial[y] = (current,min(w,dphi))
+    if partial[ag.t] != -1 :
+        return (True,rebuild_path(ag,partial,ag.s,ag.t),partial[ag.t][1])
+    else:
+        return (False, None)
 
-def edmond_karp(g):
-    ag = init_ag(g)
-    (ap,dphi,found) = find_path(ag)
-    f = init_flow(g)
+def edmond_karp(g, sinks):
+    ag = init_ag(g,sinks)
+    (found,ap,dphi) = find_path(ag)
+    f = init_flow(ag)
     while found:
         update_ag(ag,ap,dphi)
         update_flow(f,ap)
         (ap,found) = find_path(ag)
+    return f 
 
 
 def main():
@@ -207,6 +242,7 @@ def main():
     simplifie la vie.
     """
 
+    print("--------------------------------\nCeasefire for Palestine\n")
     g = graph(N)
     sigma = {}
     i = 0
@@ -220,12 +256,11 @@ def main():
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
     g.s = sigma["s"]
+    fin = 40
     g.t = None
-    rho = {v:k for (k,v) in sigma.items()}
-    print(47,rho[47])
-    print([(y,rho[y], c) for y,c in g.edges(47)])
-    
-    p = widest_path(g,sigma["s"],sigma[40])
+    rho = {v:k for (k,v) in sigma.items()}    
+    p = widest_path(g,sigma["s"],sigma[fin])
+    print("The widest path between s and {fin}")
     print([rho[e] for e in p])
     
 main()
