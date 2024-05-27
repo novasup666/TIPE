@@ -89,7 +89,7 @@ class graph:
         return [(y, self.weight(x,y)) for y in self.adj[x]]
     
     def custom_copy(self):
-        g = graph.init(self.size)
+        g = graph(self.size)
         g.matrix = [t.copy() for t in self.matrix]
         g.adj = [t.copy() for t in self.adj]
         g.s = self.s
@@ -152,12 +152,13 @@ def init_ag(g,sinks) :
     """
     n = g.size
     ag = g.custom_copy()
-    ag.matrix = [row for row in ag.matrix]
-    ag.matrix.append([0 for _ in range ( n +1)])
-    g.size = n+1
-    g.t = n
+    ag.matrix = [row+[0] for row in ag.matrix]
+    ag.matrix.append([0 for _ in range(n +1)])
+    ag.adj.append([])
+    ag.size = n+1
+    ag.t = n
     for s in sinks:
-        ag.add_edge (s,g.t, float("inf"))
+        ag.add_edge (s,ag.t, float("inf"))
     return ag
 
 def update_ag(ag,ap,dphi):
@@ -168,15 +169,16 @@ def update_ag(ag,ap,dphi):
     Pour chaque arete emprunté la capacité restante est réduite de dphi et la capacité restante de l'arc inverse est augmentée de 1
     """
     n = len(ap)
-    ag.update(x, y, ag.weight(ap[0],ap[1])-dphi)
-    for i in range(2,n-1):
+
+    for i in range(0,n):
         x = ap[i-1]
         y = ap[i]
         ag.update_edge(x, y, ag.weight(x,y)-dphi)
         ag.update_edge(y, x, ag.weight(x,y)+dphi)
+    
         
 def init_flow(g):
-    return graph.init(g.size)
+    return graph(g.size)
 
 def update_flow(f,ap,dphi):
     n = len(ap)
@@ -213,13 +215,14 @@ def find_path(ag):
 
     while not bag.empty():
         current = bag.get()
-        dphi = partial[current]
+        dphi = partial[current][1]
         aretes = ag.edges(current)
         vus.add(current)
         for y,w in aretes:
             if y not in vus:
                 bag.put(y)
                 partial[y] = (current,min(w,dphi))
+    print(ag.s)
     if partial[ag.t] != -1 :
         return (True,rebuild_path(ag,partial,ag.s,ag.t),partial[ag.t][1])
     else:
@@ -260,8 +263,9 @@ def main():
     g.t = None
     rho = {v:k for (k,v) in sigma.items()}    
     p = widest_path(g,sigma["s"],sigma[fin])
-    print("The widest path between s and {fin}")
+    print(f"The widest path between s and {fin}")
     print([rho[e] for e in p])
-    
+    f = edmond_karp(g,[sigma[1000],sigma[1001],sigma[1002]])
+    print(f.matrix)
 main()
 
