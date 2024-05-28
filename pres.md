@@ -116,11 +116,13 @@ $\delta = 5 pers./m²$
 Capacité d'une rue: débit maximal en pers./s
 
 $c = \delta * w * v$
-- $w$ la largeur de la rue 
+- $w$ la largeur de la rue (approximée)
 - $v$ la vitesse de la foule
 - $\delta$ la  densité de la  foule
 </div>
 <div>
+
+$v= 0,4m/s$ 
 
 ![Speed/density](images/v_over_delta.png)
 <span style="font-size:0.5em;"> Étude expérimentale et modélisation des déplacements collectifs de piétons @Mehdi Moussaid </span>
@@ -128,6 +130,11 @@ $c = \delta * w * v$
 </div>
 </div>
 
+---
+# Modélisation de la capacité
+
+<img src="images/map.png" width="800">
+<img src="images/graph.png" width="800">
 
 
 ---
