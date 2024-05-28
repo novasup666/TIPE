@@ -29,8 +29,8 @@ style: |
 -->
 
 <!-- header: 'TIPE - Noé VINCENT' -->
-# TIPE: Application de la théorie des graphes pour la gestion de Foules. 
-Cas du Stade de France pendant les Jeux Olympiques
+# TIPE: Gestions des flux de spectateurs autour du stade de France par la théorie des graphes.
+Définition d'itinéraires sécurisés pour évacuer le Stade de France.
 Noé VINCENT
 
 ---
@@ -66,7 +66,7 @@ Le stade de France: 81 500 spectateurs
 </div>
 <div>
 
-<img src="map_rot.png"  height="450"> 
+<img src="images/map_rot.png"  height="450"> 
 
 <span style="font-size:0.5em;">Carte des alentours du Stade de France - @OSM</span>
 
@@ -86,7 +86,7 @@ On place la limite à 5 personnes/m²
 </div>
 <div>
 
-<img src="image-1.png"  > 
+<img src="images/image-1.png"  > 
 
 <span style="font-size:0.5em;"> Issu de: These are the warning signs that a crowd is dangerously dense - @CNN</span>
 
@@ -98,7 +98,7 @@ On place la limite à 5 personnes/m²
 # 2. Modélisation: Graphe de Capacité
 
 ---
-# Graphes de capacité
+### Graphes de capacités
 Soit $G_c = (V,E, C)$ un graphe non orienté pondéré par:
 
 $C : E \rightarrow \mathbb{N}$ la capacité de chaque arête.
@@ -106,7 +106,8 @@ $C : E \rightarrow \mathbb{N}$ la capacité de chaque arête.
 Le graphe des capacités.
 
 ---
-# Modélisation de la capacité
+### Modélisations de la capacité
+
 <div class="columns">
 <div>
 Modélisation de piétons dans le pire des cas :
@@ -131,11 +132,50 @@ $v= 0,4m/s$
 </div>
 
 ---
-# Modélisation de la capacité
+### Graphe de capacité
+<div>
+<img src="images/map.png" >
 
-<img src="images/map.png" width="800">
-<img src="images/graph.png" width="800">
+<span style="font-size:0.5em;"> Carte de la zone @OSM </span> 
+</div>
 
+---
+### Graphe  de capacité
+
+<img src="images/graph.png" >
+<span style="font-size:0.5em;"> Graphe représentant la zone
+</span> 
+
+---
+# 3. Une méthode naïve
+$\rightarrow$ les chemins de plus grande capacité entre le stade et les stations
+
+---
+### Capacité d'un chemin
+$p \subset E$
+$C(p) = min\left\{C(e), e \in p\right\}$
+
+
+### L'algorithme de dijkstra
+Chemin de poids minimal dans un graphe.
+
+### Algorithme Widest Path
+Algorithme de dijkstra modifié $\rightarrow$ chemin de capacité maximale 
+
+---
+### Proposition de solution
+![graph](images/graph.png)
+
+---
+### Proposition de solution
+Chemin le plus large entre le stade et le métro, largeur : 3
+![s-1000](images/s-1000.png)
+
+---
+### Proposition de solution
+Chemin le plus large entre le stade et le RER B, largeur 7
+
+![s-1001](image.png)
 
 ---
 # 4. Une methode optimale :  Le flot maximal

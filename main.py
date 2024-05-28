@@ -16,20 +16,24 @@ def find(i, pos):
                 return (pos[j][1], -pos[j][2])
         return (0,i)
 
-def show_graph_with_labels(adjacency_matrix, mylabels):
-    """ rows, cols = np.where(adjacency_matrix != 0)
-    edges = zip(rows.tolist(), cols.tolist())
-    gr = nx.Graph()
-    all_rows = range(0, adjacency_matrix.shape[0])
-    for n in all_rows:
-        gr.add_node(n)
-    gr.add_edges_from(edges)
+def show_graph_with_labels(adjacency_matrix, mylabels,path = [],w = 0):
+    """ 
+        La fonction utilise [0; |V|] comme ensemble de sommets (pas le mélange chaine de caractère, entier non consecutif)
+        This function uses [0; |V|] as vertices set (not the strings, nonconsecutive integer mix)
     """
-    G = nx.from_numpy_array(adjacency_matrix, create_using=nx.Graph)
+    G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.Graph)
     ly= {i:find(i,Positions) for i in range(len(adjacency_matrix))}
     #nx.draw_networkx_edge_labels(G,pos=ly)
-    nx.draw_networkx_edges(G,pos=ly,)
-    nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, pos=ly, width = [G[u][v]['weight'] for u,v in G.edges()])
+    N = len(adjacency_matrix)
+    path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
+    couleurs = ['k' if (u,v) not in path_edges and (v,u) not in path_edges else "red" for u,v in G.edges()]
+    for u,v in path_edges:
+        G[u][v]['weight'] = w
+    poids = [G[u][v]['weight'] for u,v in G.edges()]
+
+    nx.draw_networkx_edges(G,pos=ly)
+    nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, 
+                     pos=ly, width = poids, edge_color = couleurs )
     plt.show()
 
 
@@ -173,7 +177,7 @@ def widest_path (g, start, end):
 
 
     widest_path = rebuild_path (g, partial, start, end)
-    return widest_path
+    return (widest_path, partial[end][1])
 
 def init_ag(g,sinks) : 
     """
@@ -300,17 +304,19 @@ def main():
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
     g.s = sigma["s"]
-    fin = 40
+    fin = 1000
     g.t = None
     global rho
     rho = {v:k for (k,v) in sigma.items()}    
 
-    p = widest_path(g,sigma["s"],sigma[fin])
+    p,w = widest_path(g,sigma["s"],sigma[fin])
     print(f"The widest path between s and {fin}")
     print([rho[e] for e in p])
     f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
-    show_graph_with_labels(np.matrix(g.matrix),rho)
-    show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
+    #show_graph_with_labels(np.matrix(g.matrix),rho)
+    #show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    print("\nw:",w)
+    #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
     """
     ex = graph(7)
     ex.matrix = [
