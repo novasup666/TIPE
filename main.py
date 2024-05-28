@@ -36,6 +36,25 @@ def show_graph_with_labels(adjacency_matrix, mylabels,path = [],w = 0):
                      pos=ly, width = poids, edge_color = couleurs )
     plt.show()
 
+def show_example(adjacency_matrix, path = [], w = 0):
+    G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.DiGraph)
+    ly= {0:(0,0),1:(2,1),2:(2,-1),3:(4,0),4:(6,1),5:(6,-1),6:(8,0)}
+    #nx.draw_networkx_edge_labels(G,pos=ly)
+    N = len(adjacency_matrix)
+    mylabels = {i:i for i in range (N)}
+    path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
+    couleurs = ['k' if (u,v) not in path_edges and (v,u) not in path_edges else "red" for u,v in G.edges()]
+    for u,v in path_edges:
+        G[u][v]['weight'] = str(w)/G[u][v]['weight']
+    poids = {(u,v): str (G[u][v]['weight']) for u,v in G.edges()}
+
+    nx.draw_networkx_edges(G,pos=ly)
+    nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=15)
+    nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, 
+                     pos=ly, edge_color = couleurs, arrowsize = 20 )
+    plt.show()  
+
+
 
 class max_heap:
     """
@@ -274,11 +293,13 @@ def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
-
+    show_example(np.matrix(f.matrix))
     while found:
         update_ag(ag,ap,dphi)
         update_flow(f,ap,dphi)
         (found,ap,dphi) = find_path(ag)
+        show_example(np.matrix(ag.matrix,ap,dphi))
+        show_example(np.matrix(f.matrix))
     return f 
 
 
@@ -304,7 +325,7 @@ def main():
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
     g.s = sigma["s"]
-    fin = 1000
+    fin = 1002
     g.t = None
     global rho
     rho = {v:k for (k,v) in sigma.items()}    
@@ -312,9 +333,12 @@ def main():
     p,w = widest_path(g,sigma["s"],sigma[fin])
     print(f"The widest path between s and {fin}")
     print([rho[e] for e in p])
+
+    """
     f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
+    
     #show_graph_with_labels(np.matrix(g.matrix),rho)
-    #show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
     print("\nw:",w)
     #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
     """
@@ -340,7 +364,7 @@ def main():
     ex.s = 0;
     ex.t = 6;
     f = edmond_karp(ex,None)
-    printmat(f.matrix)
+    #show_example(np.matrix(ex.matrix))
     #"""
 main()
 

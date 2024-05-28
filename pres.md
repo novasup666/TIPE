@@ -22,10 +22,6 @@ style: |
 
 </div>
 </div>
-
-
-
-
 -->
 
 <!-- header: 'TIPE - Noé VINCENT' -->
@@ -175,25 +171,111 @@ Chemin le plus large entre le stade et le métro, largeur : 3
 ### Proposition de solution
 Chemin le plus large entre le stade et le RER B, largeur 7
 
-![s-1001](image.png)
+![s-1001](images/s-1001.png)
+
+---
+### Proposition de solution
+Chemin le plus large entre le stade et le RER D, largeur 4
+![s-1002](images/s-1002.png)
+
+---
+
+### Proposition de solution
+Largeur théorique : $3+4+7 = 14$
+Débit théorique : À compléter
+
+Largeur réelle: 10
+Débit réel : À compléter
+
 
 ---
 # 4. Une methode optimale :  Le flot maximal
+Algorithme d'Edmond-Karp
 
 ---
-Soit $\varphi = (V,E,\phi)$ un graphe orienté pondéré par 
-$\phi : E\rightarrow \mathbb{N}$ le flux passant dans chaque arètes.
+## Graphes de Flots
+
+Soit $\varphi = (V,E,\phi,s,t)$ un graphe orienté pondéré par 
+$\phi : E\rightarrow \mathbb{N}$ le flot passant dans chaque arètes.
 Le graphe de flot.
+$s$ : la source
+$t$ : le puit
 
----
-
-# Propriétés des flots
-$\forall a \in E,\phi(a)\le C(a)$
+### Flot entrants et sortants dans un noeud
 On définit:
-$\phi⁺: u \in V \rightarrow \sum_{v|(u,v)\in E} \phi(u,v)$
-$\phi^-: u \in V \rightarrow \sum_{v|(v,u)\in E} \phi(v,u)$
-$\forall u \in V, \phi⁺(u) = \phi^-(u)$
+$\phi⁻: u \in V \rightarrow \sum_{v|(u,v)\in E} \phi(u,v)$
+$\phi⁺: u \in V \rightarrow \sum_{v|(v,u)\in E} \phi(v,u)$
 
 ---
+## Propriétés des Flots
+
+### Sources et puits
+$\phi⁺(s) = 0$
+$\phi⁻(t)) = 0$
+
+### Valeur du flot
+$V_{\phi} = \phi⁻(s)$
 
 
+### Conservation du flot
+
+$\forall u \in V\backslash\left\{s,t \right\}, \phi⁺(u) = \phi^-(u)$
+
+---
+### Graphe des augmentations
+Soit $G_A = (V,E,C_r)$ un graphe orienté pondéré par:
+
+$C_r : E \rightarrow \mathbb{N}$ la capacité restante de chaque arête.
+
+Le graphe des augmentation.
+
+### Chemin augmentant
+$P = (p,d\phi)\in \mathbb{P}(E) * \mathbb{N}$
+
+$p$ : ensemble d'arêtes débutant à $s$ et finissant en $t$
+
+$d\phi$ : variation du flot
+
+---
+## Algorithme d'Edmond-Karp
+
+<div class="columns">
+<div>
+
+$EK :G_c \rightarrow \varphi_{max}$
+
+
+### Objectif
+Maximiser $V_{\phi}$
+
+### Fonctionnement
+Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
+</div>
+<div>
+
+    Soit E-K(G_c = (V,E,C),pr):
+      Phi <- Vide
+      G_a <- (V+{t},
+              E + {{puit ,t} pr},
+              C_r(u,v) = C_r(v,u)  = C(u,v)
+              )
+      (P_a, dphi) = Chemin_augmentant(G_a)
+      Tant P_a != Vide : 
+        Mettre à jour G_a avec P_a, dphi
+        Mettre à jour Phi avec P_a, dphi
+      Renvoyer Phi
+<span style="font-size:0.5em;"> Pseudo-Code de l'algorithme d'Edmond Karp </span>
+
+- G_c le graphe des capacités
+- pr les puits réels
+
+</div>
+</div>
+
+---
+### Exemple
+![example graph](images/example_graph.png)
+
+---
+### Exemple
+![ex_f0](images/ex_f0.png)
