@@ -24,6 +24,8 @@ Publié:
 À venir:
 - résultats experimentaux
 - Revoir l'exemple (que ca emprunte un arc arrière)
+- Refaire les captures car nouveaux noeuds
+
 In english:
 
 /!\ The code might seem heavy or unefficient in some ways but you should keep in mind that the code mainly needs to be easyily manipulated and read (as it should be printed for exam assessors).
@@ -42,4 +44,5 @@ Published:
 Incomming:
 - the results
 - choose an other example to explain the use of back edges
+- remake screenshots because of unknow edges
 

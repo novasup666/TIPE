@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
-DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',9,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(3,44,1),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4), (34,20,4),(61,58,3),(58,57,3),(60,59,3),(59,56,3),(55,56,3),(56,57,4),(59,58,1),(59,52,4),(61,60,3),(60,53,3) ]
+DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',16,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(3,44,1),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4), (34,20,4),(61,58,3),(58,57,3),(60,59,3),(59,56,3),(55,56,3),(56,57,4),(59,58,1),(59,52,4),(61,60,3),(60,53,3), (16,8,1), (15,1000,1) ]
 Positions = [(0, 89, 238), (1, 113, 165), (2, 174, 104), (3, 206, 95), (4, 235, 95), (5, 262, 94), (6, 271, 132), (7, 302, 155), (8, 277, 251), (9, 158, 249), (10, 141, 244), (11, 116, 206), (12, 127, 253), (15, 118, 271), (16, 164, 267), (17, 143, 272), (18, 159, 289), (19, 309, 253), (20, 435, 242), (21, 437, 265), (22, 437, 325), (23, 334, 273), (24, 301, 276), (25, 339, 335), (26, 369, 331), (27, 367, 268), (28, 400, 328), (29, 396, 269), (30, 400, 383), (31, 343, 392), (32, 298, 401), (33, 437, 378), (34, 378, 246), (35, 357, 209), (36, 329, 161), (37, 327, 133), (38, 336, 92), (39, 382, 156), (40, 289, 39), (41, 269, 48), (42, 274, 94), (43, 231, 62), (44, 205, 71), (45, 175, 86), (46, 321, 59), (49, 471, 322), (51, 473, 374), (52, 497, 320), (53, 499, 371), (54, 467, 264), (55, 494, 260), (56, 515, 260), (57, 534, 259), (58, 535, 320), (59, 518, 319), (60, 519, 369), (61, 538, 367), ('s', 210, 197), (1000, 40, 284), (1001, 443, 146), (1002, 452, 418)]
 
 def find(i, pos):
@@ -22,14 +22,16 @@ def show_graph_with_labels(adjacency_matrix, mylabels,path = [],w = 0):
         This function uses [0; |V|] as vertices set (not the strings, nonconsecutive integer mix)
     """
     G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.Graph)
-    ly= {i:find(i,Positions) for i in range(len(adjacency_matrix))}
-    #nx.draw_networkx_edge_labels(G,pos=ly)
     N = len(adjacency_matrix)
+    ly= {i:find(i,Positions) for i in range(N)}
+    #ly[N-1] = (40,-418)
+    #mylabels[N-1] = "t"
+    #nx.draw_networkx_edge_labels(G,pos=ly)
     path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
     couleurs = ['k' if (u,v) not in path_edges and (v,u) not in path_edges else "red" for u,v in G.edges()]
     for u,v in path_edges:
         G[u][v]['weight'] = w
-    poids = [G[u][v]['weight'] for u,v in G.edges()]
+    poids = [G[u][v]['weight'] if G[u][v]['weight']!= float('inf') else 8 for u,v in G.edges()]
 
     nx.draw_networkx_edges(G,pos=ly)
     nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, 
@@ -160,14 +162,13 @@ Vertices = set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA})
 N = len(Vertices)
 
 def rebuild_path(g,partial, start,end):
-    path = []
+    path = [end]
     current = end
     while current !=  start :
         next = partial[current][0]
         path.append(next)
         current = next
     path.reverse()
-    path.append(end)
     return path
 
 def widest_path (g, start, end):
@@ -272,16 +273,16 @@ def find_path(ag):
     """
     bag = q.Queue()
     bag.put(ag.s)
-    dphi = float("inf")
     vus = set()
+    vus.add(ag.s)
     partial = [(-1,float('inf')) for _ in range(ag.size)]
     while not bag.empty():
         current = bag.get()
         dphi = partial[current][1]
         aretes = ag.edges(current)
-        vus.add(current)
         for y,w in aretes:
             if y not in vus:
+                vus.add(y)
                 bag.put(y)
                 partial[y] = (current,min(w,dphi))
     if partial[ag.t][0] != -1 :
@@ -297,6 +298,8 @@ def edmond_karp(g, sinks):
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
     while found:
+        print([rho[e] if e != ag.size -1 else "t" for e in ap],dphi)
+        #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
         update_flow(f,ap,dphi)
         update_ag(ag,ap,dphi)
 
@@ -340,15 +343,15 @@ def main():
     f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
     
     #show_graph_with_labels(np.matrix(g.matrix),rho)
-    #show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    #show_graph_with_labels(np.matrix(f.matrix),rho)
     s = 0
-    print(f.s,sigma[s])
-    print(f.matrix[f.s])
+
     for i in range(f.size-1):
         s += f.matrix[f.s][i]
 
     print("\ns:",s)
-    #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
+
+    show_graph_with_labels(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
     """
     ex = graph(7)
     ex.matrix = [

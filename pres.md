@@ -390,6 +390,34 @@ Graphe de flot final
 ![ex_f5(final)](images/ex_f5.png)
 
 ---
+## Dans le cas du stade de France
+Capacité proportionnelle à la largeur de la rue.
+Le puit: un noeud fictif relié par des arêtes de capacité maximale aux stations de transport en commun.
+La source : Le stade de France
+Objectif: 
+- Le flot (un débit de personne) maximal, pour évacuer le plus éfficacement la foule.
+---
+### Graphe de capacité
+![alt text](images/fin_graph.png)
+
+---
 ### Résultats expérimentaux
-Largeur : 23, débit : 46 pers/s, temps :30min
-![final flow](images/final_flow.png)
+Largeur : 23, débit : 46 pers/s, temps :30min (W-P: 10, 20 p/s)
+![flot final](images/final_flow.png)
+
+---
+# 5. Analyse des Résultats
+
+---
+## Comparaison W-P v. E-K
+- Chevauchement
+- Efficacité
+- Performance:
+  E-K 2 fois plus rapide pour le même niveau de sécurité
+
+---
+## Critique du résultat
+
+![flow with map](image.png)
+
+
