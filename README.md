@@ -1,6 +1,6 @@
 TIPE 
 (French CPGE project)
-(CPGE: Classe Préparatoire aux Grandes Ecoles: 2 intensives years to prepare french engineering schools entrance exams)
+(CPGE: Classe Préparatoire aux Grandes Ecoles: 2 intensives years to prepare french engineering and research schools entrance exams)
 
 PYTHON
 
@@ -18,14 +18,15 @@ Publié:
 - implementation definitive (hm hm) de Dijkstra
 - implémentation partielle de Edmond-karp
 - La fin d'Edmond-Karp
+- Peut-etre une GUI(ou au moins un truc pour afficher les resultats)
+
 
 À venir:
 - résultats experimentaux
-- Peut-etre une GUI(ou au moins un truc pour afficher les resultats)
-
+- Revoir l'exemple (que ca emprunte un arc arrière)
 In english:
 
-/!\ The code might seem heavy or unefficient in some aspect but you should keep in mind that the code mainly needs to be easyily manipulated and read (as it should be printed for exam assessors).
+/!\ The code might seem heavy or unefficient in some ways but you should keep in mind that the code mainly needs to be easyily manipulated and read (as it should be printed for exam assessors).
 
 This project present a modified implementation of Dijkstra's algorithm to find a widest path in a flow network, as well as an implementation of Edmond-Karp's algorithmof max flow. 
 
@@ -36,8 +37,9 @@ Published:
 - the flow network
 - ultimate (hm hm) implementation of Dijkstra 
 - finishing edmond karp
+- Maybe a GUI (or at least a graph factory)
 
 Incomming:
 - the results
-- Maybe a GUI (or at least a graph factory)
+- choose an other example to explain the use of back edges
 

@@ -43,15 +43,15 @@ def show_example(adjacency_matrix, path = [], w = 0):
     N = len(adjacency_matrix)
     mylabels = {i:i for i in range (N)}
     path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
-    couleurs = ['k' if (u,v) not in path_edges and (v,u) not in path_edges else "red" for u,v in G.edges()]
+    couleurs = ['k' if (u,v) not in path_edges else "red" for u,v in G.edges()]
     for u,v in path_edges:
-        G[u][v]['weight'] = str(w)/G[u][v]['weight']
+        G[u][v]['weight'] = str(w)+"/"+str(G[u][v]['weight'])
     poids = {(u,v): str (G[u][v]['weight']) for u,v in G.edges()}
 
-    nx.draw_networkx_edges(G,pos=ly)
-    nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=15)
+    nx.draw_networkx_edges(G,pos=ly, connectionstyle='arc3, rad = 0.1')
+    nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=15,connectionstyle='arc3, rad = 0.1')
     nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, 
-                     pos=ly, edge_color = couleurs, arrowsize = 20 )
+                     pos=ly, edge_color = couleurs, arrowsize = 20,connectionstyle='arc3, rad = 0.1' )
     plt.show()  
 
 
@@ -137,10 +137,11 @@ class graph:
         if v == 0:
             self.matrix[x][y] = v
             self.adj[x].remove(y)
-        if v>0:
-            self.matrix[x][y] = v
         else:
-            self.matrix[y][x] = -v
+            if v>0:
+                self.matrix[x][y] = v
+            else:
+                self.matrix[y][x] = -v
             
     def edges(self,x):
         return [(y, self.weight(x,y)) for y in self.adj[x]]
@@ -237,8 +238,10 @@ def update_ag(ag,ap,dphi):
         ag.update_edge(y, x, ag.weight(y,x)+dphi)
     
         
-def init_flow(g):
-    return graph(g.size)
+def init_flow(ag):
+    f = graph(ag.size)
+    f.s = ag.s
+    return f
 
 def update_flow(f,ap,dphi):
     n = len(ap)
@@ -293,13 +296,11 @@ def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
-    show_example(np.matrix(f.matrix))
     while found:
-        update_ag(ag,ap,dphi)
         update_flow(f,ap,dphi)
+        update_ag(ag,ap,dphi)
+
         (found,ap,dphi) = find_path(ag)
-        show_example(np.matrix(ag.matrix,ap,dphi))
-        show_example(np.matrix(f.matrix))
     return f 
 
 
@@ -330,16 +331,23 @@ def main():
     global rho
     rho = {v:k for (k,v) in sigma.items()}    
 
+    """
     p,w = widest_path(g,sigma["s"],sigma[fin])
     print(f"The widest path between s and {fin}")
     print([rho[e] for e in p])
-
-    """
+²   """
+    
     f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
     
     #show_graph_with_labels(np.matrix(g.matrix),rho)
-    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
-    print("\nw:",w)
+    #show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    s = 0
+    print(f.s,sigma[s])
+    print(f.matrix[f.s])
+    for i in range(f.size-1):
+        s += f.matrix[f.s][i]
+
+    print("\ns:",s)
     #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
     """
     ex = graph(7)

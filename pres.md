@@ -182,11 +182,10 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 
 ### Proposition de solution
 Largeur théorique : $3+4+7 = 14$
-Débit théorique : À compléter
-
-Largeur réelle: 10
-Débit réel : À compléter
-
+Débit théorique : $28 pers/s$
+Largeur réelle: $10$
+Débit réel : $20 pers/s$
+Temps d'évacuation : 1h08
 
 ---
 # 4. Une methode optimale :  Le flot maximal
@@ -232,7 +231,7 @@ Le graphe des augmentation.
 ### Chemin augmentant
 $P = (p,d\phi)\in \mathbb{P}(E) * \mathbb{N}$
 
-$p$ : ensemble d'arêtes débutant à $s$ et finissant en $t$
+$p$ : ensemble d'arcs débutant à $s$ et finissant en $t$
 
 $d\phi$ : variation du flot
 
@@ -273,9 +272,124 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 </div>
 
 ---
-### Exemple
-![example graph](images/example_graph.png)
+## Algorithme d'Edmond-Karp
+### Recherche du Chemin augmentant
+Parcours en largeur : plus court chemin en nombre d'arc
+
+### Arc avant 
+Arc de $G_r$ dans le sens initial, le sens du flot
+
+
+### Arc arrière
+Arc de $G_r$ de sens inverse au flot, de capacité égale au flot.
+
+---
+
+### Mise à jour de $\varphi$
+$\forall e=(u,v) \in p$ 
+si e est un  arc avant:
+$\phi(u,v) \leftarrow \phi(u,v)+ d\phi$
+
+si e=(v,u) est un arc arrière :
+$\phi(u,v) \leftarrow \phi(u,v)-d\phi$
+
+### Mise à jour de $G_r$
+$\forall e =(u,v) \in p, C_r(u,v) \leftarrow C_r(u,v) - d\phi$
+$\forall e =(u,v) \in p, C_r(v,u) \leftarrow C_r(v,u) + d\phi$
+
+
 
 ---
 ### Exemple
+Graphe de Capacité, graphe d'augmentation
+![ex_graph](images/example_graph.png)
+
+---
+### Exemple
+Graphe de flot
 ![ex_f0](images/ex_f0.png)
+
+---
+### Exemple
+Graphe d'augmentation, chemin augmentant
+![alt text](images/ex_agp0.png)
+
+---
+### Exemple
+Graphe de flot
+![ex_f1](images/ex_f1.png)
+
+---
+### Exemple
+Graphe d'augmentation
+![ag1](images/ex_ag1.png)
+
+---
+### Exemple
+Graphe d'augmentation, chemin augmentant
+![agp1](images/ex_agp1.png)
+
+---
+### Exemple
+Graphe de flot
+![ex_f2](images/ex_f2.png)
+
+---
+### Exemple
+Graphe d'augmentation
+![ag2](images/ex_ag2.png)
+
+---
+### Exemple
+Graphe d'augmentation, chemin augmentant
+![agp2](images/ex_agp2.png)
+
+---
+### Exemple
+Graphe de flot
+![ex_f3](images/ex_f3.png)
+
+---
+### Exemple
+Graphe d'augmentation
+![ag3](images/ex_ag3.png)
+
+---
+### Exemple
+Graphe d'augmentation, chemin augmentant
+![agp3](images/ex_agp3.png)
+
+---
+### Exemple
+Graphe de flot
+![ex_f4](images/ex_f4.png)
+
+---
+### Exemple
+Graphe d'augmentation
+![ag4](images/ex_ag4.png)
+
+---
+### Exemple
+Graphe d'augmentation, chemin augmentant
+![agp4](images/ex_agp4.png)
+
+---
+### Exemple
+Graphe de flot
+![ex_f5](images/ex_f5.png)
+
+---
+### Exemple
+Graphe d'augmentation final
+![ag5](images/ex_ag5.png)
+
+---
+### Exemple
+Graphe de flot final
+![ex_f5(final)](images/ex_f5.png)
+
+---
+### Résultats expérimentaux
+Largeur : 23, débit : 46 pers/s, temps :30min
+![final flow](images/final_flow.png)
