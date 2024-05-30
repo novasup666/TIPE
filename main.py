@@ -3,8 +3,17 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
+#----------------- Données 
+
 DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',16,2),('s',10,2),(0,1000,3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(3,44,1),(39,1001,12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,1002,8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4), (34,20,4),(61,58,3),(58,57,3),(60,59,3),(59,56,3),(55,56,3),(56,57,4),(59,58,1),(59,52,4),(61,60,3),(60,53,3), (16,8,1), (15,1000,1) ]
 Positions = [(0, 89, 238), (1, 113, 165), (2, 174, 104), (3, 206, 95), (4, 235, 95), (5, 262, 94), (6, 271, 132), (7, 302, 155), (8, 277, 251), (9, 158, 249), (10, 141, 244), (11, 116, 206), (12, 127, 253), (15, 118, 271), (16, 164, 267), (17, 143, 272), (18, 159, 289), (19, 309, 253), (20, 435, 242), (21, 437, 265), (22, 437, 325), (23, 334, 273), (24, 301, 276), (25, 339, 335), (26, 369, 331), (27, 367, 268), (28, 400, 328), (29, 396, 269), (30, 400, 383), (31, 343, 392), (32, 298, 401), (33, 437, 378), (34, 378, 246), (35, 357, 209), (36, 329, 161), (37, 327, 133), (38, 336, 92), (39, 382, 156), (40, 289, 39), (41, 269, 48), (42, 274, 94), (43, 231, 62), (44, 205, 71), (45, 175, 86), (46, 321, 59), (49, 471, 322), (51, 473, 374), (52, 497, 320), (53, 499, 371), (54, 467, 264), (55, 494, 260), (56, 515, 260), (57, 534, 259), (58, 535, 320), (59, 518, 319), (60, 519, 369), (61, 538, 367), ('s', 210, 197), (1000, 40, 284), (1001, 443, 146), (1002, 452, 418)]
+
+Vertices = set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA})
+N = len(Vertices)
+#------------------ Affichage
+
+def printmat(m):
+    for r in m : print(r,"\n")
 
 def find(i, pos):
     if i not in rho:
@@ -56,7 +65,7 @@ def show_example(adjacency_matrix, path = [], w = 0):
                      pos=ly, edge_color = couleurs, arrowsize = 20,connectionstyle='arc3, rad = 0.1' )
     plt.show()  
 
-
+#------------------- UNE STRUCTURE DE TAS MAX
 
 class max_heap:
     """
@@ -117,6 +126,9 @@ class max_heap:
         self.sift_down(0)
         return res
 
+
+#------------------- UNE STRUCTURE DE GRAPHE
+
 class graph:
     def __init__(self,n) -> None:
         self.size = n
@@ -157,11 +169,9 @@ class graph:
         return g   
 
 
+#------------------- LE TRAITEMENT DES GRAPHES
 
-Vertices = set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA})
-N = len(Vertices)
-
-def rebuild_path(g,partial, start,end):
+def rebuild_path(partial, start,end):
     path = [end]
     current = end
     while current !=  start :
@@ -170,6 +180,7 @@ def rebuild_path(g,partial, start,end):
         current = next
     path.reverse()
     return path
+
 
 def widest_path (g, start, end):
     """
@@ -200,6 +211,7 @@ def widest_path (g, start, end):
     widest_path = rebuild_path (g, partial, start, end)
     return (widest_path, partial[end][1])
 
+#-------------------- EDMOND-KARP et fonctions associées
 def init_ag(g,sinks) : 
     """
     Construit le graphe des augmentations
@@ -238,7 +250,6 @@ def update_ag(ag,ap,dphi):
         ag.update_edge(x, y, ag.weight(x,y)-dphi)
         ag.update_edge(y, x, ag.weight(y,x)+dphi)
     
-        
 def init_flow(ag):
     f = graph(ag.size)
     f.s = ag.s
@@ -256,15 +267,11 @@ def update_flow(f,ap,dphi):
 def find_path(ag):
     """
     Cherche et (parfois) trouve le chemin augmentant le plus court pour le flot dans ag
-
     Renvoie (b,ap,dphi)
     -b; booleen indiquant si un chemin augmentant pour le flux à été trouvé
     -ap: edge list le chemin, [] si n'existe pas.
 
-    On considère le poids de chaque rue comme unitaire 
-
     Looks for and (sometime) finds the shortest augmenting path for the flux in the augmenting graph
-
     Returns (b,ap,dphi):
     - b: boolean indicating wheter or not the augmenting path has been found.
     - ap: edge (int) list, the path itself
@@ -289,9 +296,6 @@ def find_path(ag):
         return (True,rebuild_path(ag,partial,ag.s,ag.t),partial[ag.t][1])
     else:
         return (False, None, 0)
-def printmat(m):
-    for r in m : print(r,"\n")
-
 
 def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
@@ -311,48 +315,10 @@ def edmond_karp(g, sinks):
 def main():
     """
     rep et sigma permettent de traiter les trous dans la numérotation des noeuds et l'utilisation de s
-    simplifie la vie.
+    simplifie le travail de création du graphe.
     """
 
-    print("--------------------------------\nCeasefire for Palestine\n")
-    g = graph(N)
-    global sigma
-    sigma = {}
-    i = 0
-    for v in Vertices:
-        sigma[v] = i
-        i+=1
-    for i in range(len(DATA)):
-        x,y,w = DATA[i]
-        rx = sigma[x]
-        ry = sigma[y]
-        g.add_edge(rx,ry,w)
-        g.add_edge(ry,rx,w)
-    g.s = sigma["s"]
-    fin = 1002
-    g.t = None
-    global rho
-    rho = {v:k for (k,v) in sigma.items()}    
-
-    """
-    p,w = widest_path(g,sigma["s"],sigma[fin])
-    print(f"The widest path between s and {fin}")
-    print([rho[e] for e in p])
-²   """
-    
-    f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
-    
-    #show_graph_with_labels(np.matrix(g.matrix),rho)
-    #show_graph_with_labels(np.matrix(f.matrix),rho)
-    s = 0
-
-    for i in range(f.size-1):
-        s += f.matrix[f.s][i]
-
-    print("\ns:",s)
-
-    show_graph_with_labels(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
-    """
+    # Création des graphes
     ex = graph(7)
     ex.matrix = [
         [0,5,15,0,0,0,0],
@@ -374,8 +340,47 @@ def main():
     ]
     ex.s = 0;
     ex.t = 6;
-    f = edmond_karp(ex,None)
-    #show_example(np.matrix(ex.matrix))
-    #"""
+
+    g = graph(N)
+    global sigma
+    sigma = {}
+    i = 0
+    for v in Vertices:
+        sigma[v] = i
+        i+=1
+    for i in range(len(DATA)):
+        x,y,w = DATA[i]
+        rx = sigma[x]
+        ry = sigma[y]
+        g.add_edge(rx,ry,w)
+        g.add_edge(ry,rx,w)
+    g.s = sigma["s"]
+    fin = 1002
+    g.t = None
+    global rho
+    rho = {v:k for (k,v) in sigma.items()}    
+
+
+    """
+    Faits des les appels à WP et EK (et affiche les résultats)
+    """
+
+    show_graph_with_labels(np.matrix(g.matrix),rho)
+
+    
+    p,w = widest_path(g,sigma["s"],sigma[1001])
+    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    
+    p,w = widest_path(g,sigma["s"],sigma[1002])
+    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+
+    f = edmond_karp(g,[sigma[1001],sigma[1000], sigma[1002]])
+    
+
+
+
+    show_graph_with_labels(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
+    #slicing pour ne pas afficher le sommet virtuel t
+    
 main()
 

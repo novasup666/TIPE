@@ -179,16 +179,33 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 ![s-1002](images/s-1002.png)
 
 ---
+## Analyse de la solution
+Zoom sur le sud-est du graph
+<div class="columns">
+<div>
+Goulots d'etranglement
+<img src="images/zoom.png">
+<img src="images/zoomf1001.png">
 
-### Proposition de solution
+</div>
+<div>
+Cannibalisme
+<img src="images/zoomf1002.png">
+<img src="images/zoomf1001.png">
+</div>
+</div>
+
+---
+
+## Annalyse de la solution
 Largeur théorique : $3+4+7 = 14$
 Débit théorique : $28 pers/s$
-### Cannibalisme 
+
+
 Largeur réelle: $10$
 Débit réel : $20 pers/s$
 Temps d'évacuation : 1h08
 
-### Goulots
 ---
 # 4. Une methode optimale :  Le flot maximal
 Algorithme d'Edmond-Karp
