@@ -30,9 +30,9 @@ Définition d'itinéraires sécurisés pour évacuer le Stade de France.
 Noé VINCENT
 
 ---
-# Motivation
-A voir
-
+## Comment utiliser la théorie des graphes pour définir les itinéraires piétons aux alentours du stade  de France ?
+- maintenir la sécurité des spectateurs.
+- le plus efficacement.
 
 ---
 # Plan
@@ -183,10 +183,12 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 ### Proposition de solution
 Largeur théorique : $3+4+7 = 14$
 Débit théorique : $28 pers/s$
+### Cannibalisme 
 Largeur réelle: $10$
 Débit réel : $20 pers/s$
 Temps d'évacuation : 1h08
 
+### Goulots
 ---
 # 4. Une methode optimale :  Le flot maximal
 Algorithme d'Edmond-Karp
@@ -418,6 +420,6 @@ Largeur : 23, débit : 46 pers/s, temps :30min (W-P: 10, 20 p/s)
 ---
 ## Critique du résultat
 
-![flow with map](image.png)
+![flow with map](images/flow_on_map.png)
 
 
