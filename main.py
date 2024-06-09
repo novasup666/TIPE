@@ -25,43 +25,64 @@ def find(i, pos):
                 return (pos[j][1], -pos[j][2])
         return (0,i)
 
-def show_graph_with_labels(adjacency_matrix, mylabels,path = [],w = 0):
-    """ 
-        La fonction utilise [0; |V|] comme ensemble de sommets (pas le mélange chaine de caractère, entier non consecutif)
-        This function uses [0; |V|] as vertices set (not the strings, nonconsecutive integer mix)
-    """
+def show_graph_wo_sink(adjacency_matrix, mylabels,path = [],w = 0):
+
     G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.Graph)
     N = len(adjacency_matrix)
     ly= {i:find(i,Positions) for i in range(N)}
-    #ly[N-1] = (40,-418)
-    #mylabels[N-1] = "t"
-    #nx.draw_networkx_edge_labels(G,pos=ly)
     path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
-    couleurs = ['k' if (u,v) not in path_edges and (v,u) not in path_edges else "red" for u,v in G.edges()]
+    couleurs = ['k' if ((u,v) not in path_edges) and ((v,u) not in path_edges) else "red" for u,v in G.edges()]
+
     for u,v in path_edges:
         G[u][v]['weight'] = w
     poids = [G[u][v]['weight'] if G[u][v]['weight']!= float('inf') else 8 for u,v in G.edges()]
-
+    lab = {(u,v):str(G[u][v]['weight'])for u,v in G.edges()}
     nx.draw_networkx_edges(G,pos=ly)
     nx.draw_networkx(G, node_size=300, labels=mylabels, with_labels=True, 
-                     pos=ly, width = poids, edge_color = couleurs,node_color = 'w' )
+                     pos=ly, edge_color = couleurs,node_color = 'lightgrey', width = poids )
     plt.show()
 
-def show_example(adjacency_matrix, path = [], w = 0):
+def show_graph_w_sink(adjacency_matrix, mylabels,path = [],w = 0):
+
+    G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.Graph)
+    N = len(adjacency_matrix)
+    ly= {i:find(i,Positions) for i in range(N)}
+    ly[N-1] = (40,-418)
+    mylabels[N-1] = "t"
+    path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
+    couleurs = ['k' if u!= N-1 and v!= N-1 and ((u,v) not in path_edges) 
+                and ((v,u) not in path_edges) else "red" for u,v in G.edges()]
+
+    for u,v in path_edges:
+        G[u][v]['weight'] = w
+    poids = [G[u][v]['weight'] if G[u][v]['weight']!= float('inf') else 8 for u,v in G.edges()]
+    nx.draw_networkx_edges(G,pos=ly)
+    nx.draw_networkx(G, node_size=300, labels=mylabels, with_labels=True, 
+                     pos=ly, edge_color = couleurs,node_color = 'lightgrey', width = poids )
+    plt.show()
+
+def show_example(adjacency_matrix, trace = False, capa = [[]],path=[], w = 0):
     G = nx.from_numpy_array(adjacency_matrix, parallel_edges=True, create_using=nx.DiGraph)
-    ly= {0:(0,0),1:(2,1),2:(2,-1),3:(4,0),4:(6,1),5:(6,-1),6:(8,0)}
+    ly= {0:(0,0),1:(1,1),2:(1,-1),3:(2,0)}
     #nx.draw_networkx_edge_labels(G,pos=ly)
     N = len(adjacency_matrix)
     mylabels = {i:i for i in range (N)}
     path_edges = {(path[i-1],path[i]) for i in range(1,len(path))}
+
+    if trace:
+        for i in range(1,len(path)):
+            capa[path[i-1]][path[i]]+=w
+        
     couleurs = ['k' if (u,v) not in path_edges else "red" for u,v in G.edges()]
-    for u,v in path_edges:
-        G[u][v]['weight'] = str(w)+"/"+str(G[u][v]['weight'])
+    if trace:
+        for u,v in G.edges():
+            w = capa[u][v]
+            G[u][v]['weight'] = str(w)+"/"+str(G[u][v]['weight'])
     poids = {(u,v): str (G[u][v]['weight']) for u,v in G.edges()}
 
     nx.draw_networkx_edges(G,pos=ly, connectionstyle='arc3, rad = 0.1')
-    nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=15,connectionstyle='arc3, rad = 0.1')
-    nx.draw_networkx(G, node_size=700, labels=mylabels, with_labels=True, 
+    nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=20,connectionstyle='arc3, rad = 0.1')
+    nx.draw_networkx(G, node_size=700, node_color = 'w', labels=mylabels, with_labels=True, 
                      pos=ly, edge_color = couleurs, arrowsize = 20,connectionstyle='arc3, rad = 0.1' )
     plt.show()  
 
@@ -72,8 +93,8 @@ class max_heap:
     Une implementation personnelle d'un tas max stockant des tuples (int, any)
     basé sur un arbre linéarisé dans un tableau (ici une liste).
 
-    A custom implementing of max heap to store tuples (int, any) 
-    based on a linearised tree (a list).
+    A custom implementation of max heap to store tuples (int, any) 
+    based on a linear tree (a list).
     """
     def __init__(self) -> None:
         self.data = []
@@ -172,6 +193,10 @@ class graph:
 #------------------- LE TRAITEMENT DES GRAPHES
 
 def rebuild_path(partial, start,end):
+    """
+    Partial: le tableau des prédecesseurs (any list) (içi int list)
+    Partial: the predecessor array (any list) (her an int list)
+    """
     path = [end]
     current = end
     while current !=  start :
@@ -184,11 +209,12 @@ def rebuild_path(partial, start,end):
 
 def widest_path (g, start, end):
     """
-    Version adaptée de Dijkstra au probleme considéré : chemin le plus
-    large: maximum des minimum des capacités des arètes.
+    Version adaptée de Dijkstra au probleme considéré : 
+    - chemin le plus large: chemin dont le minimum des capacités 
+    de ses arètes est maximal.
 
     Adapted implementation of Dijkstra's algorithm to solve the
-    widest-path problem: looking for the paht with the biggest of 
+    widest-path problem: looking for the path with the biggest  
     minimum capacity along its way.
     """
     node =  start
@@ -205,8 +231,8 @@ def widest_path (g, start, end):
             new_capa = min(capa,w)
             if y not in treated and ( partial[y][1] == 0  or new_capa > partial[y][1]):
                 bag.push(new_capa,y)
-                partial[y] = (node,new_capa) # garder node permet de se souvenir du meilleur père et de simplifier rebuild_path
-
+                partial[y] = (node,new_capa) 
+                # garder node permet de garder le meilleur prédecesseur
 
     widest_path = rebuild_path ( partial, start, end)
     return (widest_path, partial[end][1])
@@ -217,8 +243,11 @@ def init_ag(g,sinks) :
     Construit le graphe des augmentations
     Builds the augmenting graph
 
-    On ajoutera des arcs de capacités infinies entre t (un noeud virtuel) et les differents points de sorties réels
-    We will add to ag edges of infinite capacity between t (a virtual sink node) and the different real sink nodes
+    On ajoutera des arcs de capacités infinies entre t (un puits virtuel) 
+    et les differents points de sorties réels
+
+    We will add to ag edges of infinite capacity between t 
+    (a virtual sink node) and the different real sink nodes
     """
     if sinks != None:
         n = g.size
@@ -236,12 +265,6 @@ def init_ag(g,sinks) :
     return ag
 
 def update_ag(ag,ap,dphi):
-    """
-    Met le graphe des augmentations à jour en soustrayant aux aretes du chemin augmentant
-    considéré le supplément de flux.
-    Updates the augmenting graph regarding the evolution dphi of flux.
-    Pour chaque arete emprunté la capacité restante est réduite de dphi et la capacité restante de l'arc inverse est augmentée de 1
-    """
     n = len(ap)
 
     for i in range(1,n):
@@ -266,16 +289,21 @@ def update_flow(f,ap,dphi):
 
 def find_path(ag):
     """
-    Cherche et (parfois) trouve le chemin augmentant le plus court pour le flot dans ag
+    Cherche et (parfois) trouve le chemin augmentant 
+    le plus court pour le flot dans ag
     Renvoie (b,ap,dphi)
-    -b; booleen indiquant si un chemin augmentant pour le flux à été trouvé
-    -ap: edge list le chemin, [] si n'existe pas.
+    -b; booleen : indiquant si un chemin augmentant 
+        pour le flot à été trouvé
+    -ap: edge list: le chemin 
+    -dphi: int : la variation de flot
 
-    Looks for and (sometime) finds the shortest augmenting path for the flux in the augmenting graph
+    Looks for and (sometime) finds the shortest augmenting 
+    path for the flow in the augmenting graph
     Returns (b,ap,dphi):
-    - b: boolean indicating wheter or not the augmenting path has been found.
-    - ap: edge (int) list, the path itself
-    - dphi: int :  the change of flux
+    - b: boolean : indicating whether or not 
+        the augmenting path has been found.
+    - ap: edge (int) list : the path itself
+    - dphi: int :  the flow variation
 
     """
     bag = q.Queue()
@@ -301,9 +329,8 @@ def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
+    #show_graph_with_labels(np.matrix(ag.matrix),rho)
     while found:
-        print([rho[e] if e != ag.size -1 else "t" for e in ap],dphi)
-        #show_graph_with_labels(np.matrix([r[0:-1] for r in f.matrix][0:-1]),rho)
         update_flow(f,ap,dphi)
         update_ag(ag,ap,dphi)
 
@@ -314,33 +341,12 @@ def edmond_karp(g, sinks):
 
 def main():
     """
-    rep et sigma permettent de traiter les trous dans la numérotation des noeuds et l'utilisation de s
-    simplifie le travail de création du graphe.
+    rho et sigma créent une bijection entre [1;N] et V
+    qui ne sont pas des entiers consecutifs (s,M,D,B)
+
+    rho and sigma create a bijection between [1;N] and V as 
+    these are not consecutive integers.
     """
-
-    # Création des graphes
-    ex = graph(7)
-    ex.matrix = [
-        [0,5,15,0,0,0,0],
-        [0,0,0,0,7,0,0],
-        [0,0,0,3,0,12,0],
-        [0,6,0,0,0,0,2],
-        [0,0,0,0,0,0,8],
-        [0,0,0,5,0,0,5],
-        [0,0,0,0,0,0,0],                
-    ]
-    ex.adj = [
-        [1,2],
-        [4],
-        [3,5],
-        [1,6],
-        [6],
-        [3,6],
-        []
-    ]
-    ex.s = 0;
-    ex.t = 6;
-
     g = graph(N)
     global sigma
     sigma = {}
@@ -355,16 +361,36 @@ def main():
         g.add_edge(rx,ry,w)
         g.add_edge(ry,rx,w)
     g.s = sigma["s"]
-    fin = "D"
     g.t = None
     global rho
-    rho = {v:k for (k,v) in sigma.items()}    
+    rho = {v:k for (k,v) in sigma.items()} 
+
+
+
+    # Création des graphes
+    ex = graph(4)
+    ex.matrix = [
+        [0,2,2,0],  
+        [0,0,1,2],
+        [0,0,0,2],
+        [0,0,0,0]              
+    ]
+    ex.adj = [
+        [1,2],
+        [2,3],
+        [3],
+        []
+    ]
+    ex.s = 0;
+    ex.t = 3;
+
+   
 
 
     """
     Faits des les appels à WP et EK (et affiche les résultats)
     """
-
+    """
     show_graph_with_labels(np.matrix(g.matrix),rho)
 
     
@@ -374,12 +400,44 @@ def main():
     p,w = widest_path(g,sigma["s"],sigma["D"])
     show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
 
+    p,w = widest_path(g,sigma["s"],sigma["M"])
+    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    """
     f = edmond_karp(g,[sigma["B"],sigma["M"], sigma["D"]])
     
-
-
-
     show_graph_with_labels(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
+    #show_graph_with_labels(np.matrix(f.matrix),rho)
+
+    """
+    capa = [
+        [0,1,1,0],  
+        [0,0,0,1],
+        [0,0,0,1],
+        [0,0,0,0]              
+    ]
+    capa2 = [
+        [0,2,1,0],  
+        [0,0,1,1],
+        [0,0,0,2],
+        [0,0,0,0]              
+    ]
+    ex2 = graph(4)
+    ex2.matrix = [
+        [0,0,0,0],  
+        [2,0,1,0],
+        [2,0,0,0],
+        [0,2,2,0]              
+    ]
+    ex2.adj = [
+        [1,2],
+        [2,3],
+        [3],
+        []
+    ]
+    ex2.s = 0;
+    ex2.t = 3;
+    show_example(np.matrix(ex2.matrix))
+    """
     #slicing pour ne pas afficher le sommet virtuel t
     
 main()

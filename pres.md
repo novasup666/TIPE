@@ -9,22 +9,17 @@ style: |
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
   }
+  .article {
+  display: grid;
+  grid-template-columns: 1fr 2fr;}
+  .deuxcinquiemes {
+  display: grid;
+  grid-template-columns: 2fr 3fr;}
+
 ---
-<!--
-<div class="columns">
-<div>
-
-</div>
-<div>
 
 
-<span style="font-size:0.5em;"> Description </span>
-
-</div>
-</div>
--->
-
-<!-- header: 'TIPE - Noé VINCENT' -->
+<!-- header: 'TIPE - Noé VINCENT - 32226' -->
 # TIPE: Gestions des flux de spectateurs autour du stade de France par la théorie des graphes.
 Définition d'itinéraires sécurisés pour évacuer le Stade de France.
 Noé VINCENT
@@ -82,12 +77,14 @@ On place la limite à 5 personnes/m²
 </div>
 <div>
 
-<img src="images/image-1.png"  > 
+<img src="images/cnn.png"  > 
 
 <span style="font-size:0.5em;"> Issu de: These are the warning signs that a crowd is dangerously dense - @CNN</span>
 
 </div>
 </div>
+
+
 
 ---
 
@@ -165,35 +162,38 @@ Algorithme de dijkstra modifié $\rightarrow$ chemin de capacité maximale
 ---
 ### Proposition de solution
 Chemin le plus large entre le stade et le métro, largeur : 3
-![s-1000](images/s-1000.png)
+![s-1000](images/M.png)
 
 ---
 ### Proposition de solution
 Chemin le plus large entre le stade et le RER B, largeur 7
 
-![s-1001](images/s-1001.png)
+![s-1001](images/B.png)
 
 ---
 ### Proposition de solution
 Chemin le plus large entre le stade et le RER D, largeur 4
-![s-1002](images/s-1002.png)
+![s-1002](images/D.png)
 
 ---
-## Analyse de la solution
-Zoom sur le sud-est du graph
-<div class="columns">
-<div>
-Goulots d'etranglement
-<img src="images/zoom.png">
-<img src="images/zoomf1001.png">
+## Analyse de la solution  
+<div class="article">
+<section> Goulot d'etranglement  </section>
+<section>  <img src="images/zoom.png"> </section>
+<section> Zoom sur le sud-est du graph  </section>
+<section> <img src="images/zoomB.png"></section>
+</div class="article">
 
-</div>
-<div>
-Cannibalisme
-<img src="images/zoomf1002.png">
-<img src="images/zoomf1001.png">
-</div>
-</div>
+
+---
+
+## Analyse de la solution
+<div class="article">
+<section> Cannibalisme  </section>
+<section>  <img src="images/zoomD.png"> </section>
+<section> Zoom sur le sud-est du graph </section>
+<section> <img src="images/zoomB.png"></section>
+</div class="article">
 
 ---
 
@@ -211,48 +211,95 @@ Temps d'évacuation : 1h08
 Algorithme d'Edmond-Karp
 
 ---
+## Graphe d'exemple
+<img src="images/ex.png">
+
+---
 ## Graphes de Flots
+
+
 
 Soit $\varphi = (V,E,\phi,s,t)$ un graphe orienté pondéré par 
 $\phi : E\rightarrow \mathbb{N}$ le flot passant dans chaque arètes.
-Le graphe de flot.
-$s$ : la source
-$t$ : le puit
 
-### Flot entrants et sortants dans un noeud
-On définit:
-$\phi⁻: u \in V \rightarrow \sum_{v|(u,v)\in E} \phi(u,v)$
-$\phi⁺: u \in V \rightarrow \sum_{v|(v,u)\in E} \phi(v,u)$
+Le graphe de flot avec $s$ : la source, $t$ : le puit
+<div style="text-align:center;">
+<img src="images/ex_flot.png" width = "600" ></div>
+
+
 
 ---
-## Propriétés des Flots
+### Propriétés des Flots: conservation du flot
+![ex_flot](images/ex_flot.png)
 
-### Sources et puits
-$\phi⁺(s) = 0$
-$\phi⁻(t)) = 0$
+---
+### Propriétés des Flots: valeur du flot
+![ex_flot](images/ex_flot.png)
+$V_{\phi} =$ le flot total sortant de s
 
-### Valeur du flot
-$V_{\phi} = \phi⁻(s)$
+---
 
+### Chemin augmentant
+![ex_ap](images/ex_ap.png)
 
-### Conservation du flot
+$(p,d_{\phi}), p\subset E, d_{\phi}\in \mathbb{N}$
 
-$\forall u \in V\backslash\left\{s,t \right\}, \phi⁺(u) = \phi^-(u)$
+---
+
+### Flot saturé
+![ex_flot_sat](images/ex_flot_sat.png)
+
+---
+### Flot maximal
+![ex_flot_max](images/ex_flot_max.png)
 
 ---
 ### Graphe des augmentations
-Soit $G_A = (V,E,C_r)$ un graphe orienté pondéré par:
+<div class="deuxcinquiemes">
+<div>
 
-$C_r : E \rightarrow \mathbb{N}$ la capacité restante de chaque arête.
+Soit $G_a = (V,E,C_r)$ un graphe orienté pondéré.
 
-Le graphe des augmentation.
 
-### Chemin augmentant
-$P = (p,d\phi)\in \mathbb{P}(E) * \mathbb{N}$
 
-$p$ : ensemble d'arcs débutant à $s$ et finissant en $t$
+</div>
+<div>
+<img src="images/ex_flot.png">
+</div>
+<div>
 
-$d\phi$ : variation du flot
+$C_r : E \rightarrow \mathbb{N}$ 
+la capacité restante de chaque arête.
+</div>
+<div>
+<img src="images/ex_ag.png">
+</div>
+</div>
+
+
+---
+### Arcs avant, Arcs arrières
+![ex_ag](images/ex_ag.png)
+
+---
+### Flot saturé
+![ex_flot_sat](images/ex_flot_sat.png)
+
+---
+### Nouvau graphe des augmentations
+![ex_ag2](images/ex_ag2.png)
+
+---
+### Nouveau Chemin augmentant
+![ex_ap2](images/ex_ap2.png)
+
+---
+### Flot maximal
+![ex_flot_max](images/ex_flot_max.png)
+
+---
+### Graphe final des augmentations
+![ex_ag_final](images/ex_ag_final.png)
 
 ---
 ## Algorithme d'Edmond-Karp
@@ -271,12 +318,11 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 </div>
 <div>
 
-    Soit E-K(G_c = (V,E,C),pr):
+    Soit E-K(G_c = (V,E,C)):
       Phi <- Vide
-      G_a <- (V+{t},
-              E + {{puit ,t} pr},
-              C_r(u,v) = C_r(v,u)  = C(u,v)
-              )
+      G_a <- (V,
+              E,
+              C_r(u,v) = C_r(v,u)  = C(u,v))
       (P_a, dphi) = Chemin_augmentant(G_a)
       Tant P_a != Vide : 
         Mettre à jour G_a avec P_a, dphi
@@ -285,7 +331,6 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 <span style="font-size:0.5em;"> Pseudo-Code de l'algorithme d'Edmond Karp </span>
 
 - G_c le graphe des capacités
-- pr les puits réels
 
 </div>
 </div>
@@ -295,12 +340,9 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 ### Recherche du Chemin augmentant
 Parcours en largeur : plus court chemin en nombre d'arc
 
-### Arc avant 
-Arc de $G_r$ dans le sens initial, le sens du flot
+-> Compléxité en $O(|V|*|E|²)$
 
-
-### Arc arrière
-Arc de $G_r$ de sens inverse au flot, de capacité égale au flot.
+Renvoie $(p,d\phi)$ un chemin augmentant
 
 ---
 
@@ -309,104 +351,13 @@ $\forall e=(u,v) \in p$
 si e est un  arc avant:
 $\phi(u,v) \leftarrow \phi(u,v)+ d\phi$
 
-si e=(v,u) est un arc arrière :
+si $e=(v,u)$ est un arc arrière :
 $\phi(u,v) \leftarrow \phi(u,v)-d\phi$
 
-### Mise à jour de $G_r$
+### Mise à jour de $G_a$
 $\forall e =(u,v) \in p, C_r(u,v) \leftarrow C_r(u,v) - d\phi$
 $\forall e =(u,v) \in p, C_r(v,u) \leftarrow C_r(v,u) + d\phi$
 
-
-
----
-### Exemple
-Graphe de Capacité, graphe d'augmentation
-![ex_graph](images/example_graph.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f0](images/ex_f0.png)
-
----
-### Exemple
-Graphe d'augmentation, chemin augmentant
-![alt text](images/ex_agp0.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f1](images/ex_f1.png)
-
----
-### Exemple
-Graphe d'augmentation
-![ag1](images/ex_ag1.png)
-
----
-### Exemple
-Graphe d'augmentation, chemin augmentant
-![agp1](images/ex_agp1.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f2](images/ex_f2.png)
-
----
-### Exemple
-Graphe d'augmentation
-![ag2](images/ex_ag2.png)
-
----
-### Exemple
-Graphe d'augmentation, chemin augmentant
-![agp2](images/ex_agp2.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f3](images/ex_f3.png)
-
----
-### Exemple
-Graphe d'augmentation
-![ag3](images/ex_ag3.png)
-
----
-### Exemple
-Graphe d'augmentation, chemin augmentant
-![agp3](images/ex_agp3.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f4](images/ex_f4.png)
-
----
-### Exemple
-Graphe d'augmentation
-![ag4](images/ex_ag4.png)
-
----
-### Exemple
-Graphe d'augmentation, chemin augmentant
-![agp4](images/ex_agp4.png)
-
----
-### Exemple
-Graphe de flot
-![ex_f5](images/ex_f5.png)
-
----
-### Exemple
-Graphe d'augmentation final
-![ag5](images/ex_ag5.png)
-
----
-### Exemple
-Graphe de flot final
-![ex_f5(final)](images/ex_f5.png)
 
 ---
 ## Dans le cas du stade de France
@@ -421,7 +372,8 @@ Objectif:
 
 ---
 ### Résultats expérimentaux
-Largeur : 23, débit : 46 pers/s, temps :30min (W-P: 10, 20 p/s)
+Largeur : $23$, débit : $46 pers/s$, temps :$30min$ 
+($WP: 10, 20 pers/s$)
 ![flot final](images/final_flow.png)
 
 ---
@@ -439,4 +391,118 @@ Largeur : 23, débit : 46 pers/s, temps :30min (W-P: 10, 20 p/s)
 
 ![flow with map](images/flow_on_map.png)
 
+---
+# 6. Annexe
 
+---
+## Idée de preuve pour la correction et la complexité d'Edmond-Karp
+Correction: équivalence entre absence de chemin augmentant et flot maximal atteint. 
+
+Complexité : si (u,v) est critique à deux moments distincts alors, u s'est éloigné de s d'au moins 2 entre ces deux moments, or $\delta(s,u)\le|V|$ donc (u,v) n'est critique qu'au plus $\frac{|V|-2} {2}$ fois. D'où nombre d'itération majoré par $|E|*|V|$ or chaque itération a une complexité en $O(|E|)$: parcours en largeur + màj $\varphi$ et màj $G_a$. 
+$\rightarrow O(|V|*|E|²)$
+
+---
+### Code - Imports et Classe de graphe:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-22.png)
+![alt text](code_images/image-6.png)
+</div>
+<div>
+
+![alt text](code_images/image-7.png)
+</div>
+
+---
+
+### Code - Classe de tas max:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-8.png)
+</div>
+<div>
+
+![alt text](code_images/image-9.png)
+</div>
+
+
+---
+
+### Code - Widest-Path, reconstruction du chemin:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-10.png)
+</div>
+<div>
+
+![alt text](code_images/image-11.png)</div>
+
+---
+
+### Code - Edmond-Karp et fonctions associées:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-12.png)
+
+</div>
+<div>
+
+![alt text](code_images/image-13.png)
+
+</div>
+
+---
+
+### Code - Edmond-Karp et fonctions associées:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-14.png)
+
+</div>
+<div>
+
+![alt text](code_images/image-15.png)
+
+</div>
+
+---
+
+### Code - Edmond-Karp et fonctions associées:
+<div class="columns">
+<div>
+
+![alt text](code_images/image-16.png)
+
+</div>
+
+---
+### Code- Graphe de capacité
+<div class="columns">
+<div>
+
+Où DATA est un tableau contenant N triplets $(d,f,c)$ 
+- $d,f \in V$ les extremités d'une arète 
+- $c \in \mathbb{N}$ sa largeur.
+
+Et Vertices un set contenant les somemts de G.
+</div>
+<div>
+
+![alt text](code_images/image-17.png)
+</div>
+
+---
+### Code - Affichage des graphes
+Avec Positions un tableau associant à chaque noeud une position sur l'image. 
+![alt text](code_images/image-21.png)
+![alt text](code_images/image-19.png)
+
+---
+### Code - Affichage des graphes
+
+![alt text](code_images/image-20.png)

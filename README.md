@@ -19,12 +19,13 @@ Publié:
 - implémentation partielle de Edmond-karp
 - La fin d'Edmond-Karp
 - Peut-etre une GUI(ou au moins un truc pour afficher les resultats)
-
-
-À venir:
 - résultats experimentaux
 - Revoir l'exemple (que ca emprunte un arc arrière)
 - Refaire les captures car nouveaux noeuds
+
+À venir:
+- La note
+
 
 In english:
 
@@ -40,9 +41,9 @@ Published:
 - ultimate (hm hm) implementation of Dijkstra 
 - finishing edmond karp
 - Maybe a GUI (or at least a graph factory)
-
-Incomming:
 - the results
 - choose an other example to explain the use of back edges
 - remake screenshots because of unknow edges
 
+Incomming:
+- The grade
