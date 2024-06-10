@@ -20,8 +20,8 @@ style: |
 
 
 <!-- header: 'TIPE - Noé VINCENT - 32226' -->
-# TIPE: Gestions des flux de spectateurs autour du stade de France par la théorie des graphes.
-Définition d'itinéraires sécurisés pour évacuer le Stade de France.
+# TIPE: Gestions des flux de spectateurs autour du Stade de France par la théorie des graphes.
+Définition d'itinéraires sécurisés pour évacuer le Stade de France lors des Jeux Olympiques.
 Noé VINCENT
 
 ---
@@ -65,7 +65,7 @@ Le stade de France: 81 500 spectateurs
 </div>
 
 ---
-# Foules et risques
+# Critère de sécurité:
 <div class="columns">
 <div>
 À partir de 6 personnes/m²,
@@ -73,7 +73,8 @@ Le stade de France: 81 500 spectateurs
 
 On place la limite à 5 personnes/m²
 
-
+Helbing & Mukerji -> trop grande densité: 
+l'une des causes du drame de la Love Parade.
 </div>
 <div>
 
@@ -127,7 +128,7 @@ $v= 0,4m/s$
 ---
 ### Graphe de capacité
 <div>
-<img src="images/map.png" >
+<img src="images/map.png" width = "690" >
 
 <span style="font-size:0.5em;"> Carte de la zone @OSM </span> 
 </div>
@@ -178,7 +179,7 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 ---
 ## Analyse de la solution  
 <div class="article">
-<section> Goulot d'etranglement  </section>
+<section> Goulot d'étranglement  </section>
 <section>  <img src="images/zoom.png"> </section>
 <section> Zoom sur le sud-est du graph  </section>
 <section> <img src="images/zoomB.png"></section>
@@ -286,11 +287,11 @@ la capacité restante de chaque arête.
 ![ex_flot_sat](images/ex_flot_sat.png)
 
 ---
-### Nouvau graphe des augmentations
-![ex_ag2](images/ex_ag2.png)
+### Nouveau graphe des augmentations
+![alt text](images/ex_ag2.png)
 
 ---
-### Nouveau Chemin augmentant
+### Nouveau chemin augmentant
 ![ex_ap2](images/ex_ap2.png)
 
 ---
@@ -319,14 +320,19 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 <div>
 
     Soit E-K(G_c = (V,E,C)):
-      Phi <- Vide
+
+      Phi <- Vide;
       G_a <- (V,
               E,
-              C_r(u,v) = C_r(v,u)  = C(u,v))
-      (P_a, dphi) = Chemin_augmentant(G_a)
-      Tant P_a != Vide : 
-        Mettre à jour G_a avec P_a, dphi
-        Mettre à jour Phi avec P_a, dphi
+              C_r(u,v) = C_r(v,u)  = C(u,v));
+
+      (P_a, dphi) = Chemin_augmentant(G_a);
+
+      Tant que P_a existe : 
+        Mettre à jour G_a avec P_a, dphi;
+        Mettre à jour Phi avec P_a, dphi;
+        (P_a, dphi) = Chemin_augmentant(G_a);
+        
       Renvoyer Phi
 <span style="font-size:0.5em;"> Pseudo-Code de l'algorithme d'Edmond Karp </span>
 
@@ -372,7 +378,7 @@ Objectif:
 
 ---
 ### Résultats expérimentaux
-Largeur : $23$, débit : $46 pers/s$, temps :$30min$ 
+Valeur du flot : $23$, débit : $46 pers/s$, temps :$30min$ 
 ($WP: 10, 20 pers/s$)
 ![flot final](images/final_flow.png)
 
@@ -381,8 +387,8 @@ Largeur : $23$, débit : $46 pers/s$, temps :$30min$
 
 ---
 ## Comparaison W-P v. E-K
-- Chevauchement
-- Efficacité
+- Pas de Cannibalisme.
+- Pas de goulot détranglement.
 - Performance:
   E-K 2 fois plus rapide pour le même niveau de sécurité
 

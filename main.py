@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
+
+
+
 #----------------- Données 
 
 DATA = [('s',0,4),('s',2,4),('s',2,3),('s',3,4),('s',4,4),('s',5,3),('s',6,3),('s',7,7),('s',8,3),('s',16,2),('s',10,2),(0,"M",3),(1,11,5),(1,45,5),(2,45,5),(45,44,5),(44,43,5),(43,41,5),(2,3,4),(3,4,4),(4,5,4),(5,42,4),(41,42,4),(42,6,4),(41,40,5),(40,46,2),(46,38,6),(38,37,6),(6,37, 5),(6,36,5),(37,36,5),(7,36,7),(36,39,12),(38,39,3),(3,44,1),(39,"B",12),(39,20,4),(36,35,3),(35,34,3),(19,34,3),(8,19,6),(19,23,1),(24,23,4),(18,24,3),(23,25,3),(23,27,4),(27,29,4),(29,21,4),(20,21,11),(21,54,3),(54,55,3),(25,31,4),(31,32,4),(25,26,5),(26,28,5),(29,28,4),(28,30,4),(30,33,3),(28,22,4),(21,22,7),(22,33,7),(33,"D",8),(51,33,7),(53,51,2),(52,53,2),(52,49,5),(55,52,2),(54,49,3),(49,51,3),(22,49,5),(10,12,5),(10,9,5),(9,16,4),(12,15,4),(12,11,5),(15,17,3), (16,17,5),(16,18,3),(17,18,4), (34,20,4),(61,58,3),(58,57,3),(60,59,3),(59,56,3),(55,56,3),(56,57,4),(59,58,1),(59,52,4),(61,60,3),(60,53,3), (16,8,1), (15,"M",1) ]
@@ -10,8 +13,12 @@ Positions = [(0, 89, 238), (1, 113, 165), (2, 174, 104), (3, 206, 95), (4, 235, 
 
 Vertices = set.union({x for x,_,_ in DATA},{x for _,x,_ in DATA})
 N = len(Vertices)
-#------------------ Affichage
 
+
+
+
+
+#------------------ Affichage
 def printmat(m):
     for r in m : print(r,"\n")
 
@@ -37,9 +44,12 @@ def show_graph_wo_sink(adjacency_matrix, mylabels,path = [],w = 0):
         G[u][v]['weight'] = w
     poids = [G[u][v]['weight'] if G[u][v]['weight']!= float('inf') else 8 for u,v in G.edges()]
     lab = {(u,v):str(G[u][v]['weight'])for u,v in G.edges()}
-    nx.draw_networkx_edges(G,pos=ly)
-    nx.draw_networkx(G, node_size=300, labels=mylabels, with_labels=True, 
-                     pos=ly, edge_color = couleurs,node_color = 'lightgrey', width = poids )
+    nx.draw_networkx_edges(G,pos=ly, width=2)
+    nx.draw_networkx_edge_labels(G,ly,edge_labels=lab, font_size=25)
+    nx.draw_networkx(G, node_size=500, labels=mylabels, with_labels=True, font_size = 25,
+                     pos=ly, edge_color = couleurs, node_color = 'w' )
+    #nx.draw_networkx(G, node_size=300, labels=mylabels, with_labels=True, 
+    #                 pos=ly, edge_color = couleurs, node_color = 'w', width = poids )
     plt.show()
 
 def show_graph_w_sink(adjacency_matrix, mylabels,path = [],w = 0):
@@ -82,12 +92,15 @@ def show_example(adjacency_matrix, trace = False, capa = [[]],path=[], w = 0):
 
     nx.draw_networkx_edges(G,pos=ly, connectionstyle='arc3, rad = 0.1')
     nx.draw_networkx_edge_labels(G,pos = ly, edge_labels=poids, font_color='b', font_size=20,connectionstyle='arc3, rad = 0.1')
-    nx.draw_networkx(G, node_size=700, node_color = 'w', labels=mylabels, with_labels=True, 
-                     pos=ly, edge_color = couleurs, arrowsize = 20,connectionstyle='arc3, rad = 0.1' )
+    nx.draw_networkx(G, node_size=700, node_color = 'w', font_size = 20, labels=mylabels, with_labels=True, 
+                     pos=ly, edge_color = couleurs, arrowsize = 30,connectionstyle='arc3, rad = 0.1' )
     plt.show()  
 
-#------------------- UNE STRUCTURE DE TAS MAX
 
+
+
+
+#------------------- UNE STRUCTURE DE TAS MAX
 class max_heap:
     """
     Une implementation personnelle d'un tas max stockant des tuples (int, any)
@@ -148,6 +161,8 @@ class max_heap:
         return res
 
 
+
+
 #------------------- UNE STRUCTURE DE GRAPHE
 
 class graph:
@@ -188,6 +203,8 @@ class graph:
         g.s = self.s
         g.t = self.t
         return g   
+
+
 
 
 #------------------- LE TRAITEMENT DES GRAPHES
@@ -236,6 +253,10 @@ def widest_path (g, start, end):
 
     widest_path = rebuild_path ( partial, start, end)
     return (widest_path, partial[end][1])
+
+
+
+
 
 #-------------------- EDMOND-KARP et fonctions associées
 def init_ag(g,sinks) : 
@@ -329,13 +350,17 @@ def edmond_karp(g, sinks):
     ag = init_ag(g,sinks)
     (found,ap,dphi) = find_path(ag)
     f = init_flow(ag)
-    #show_graph_with_labels(np.matrix(ag.matrix),rho)
+    #show_graph_wo_sink(np.matrix(ag.matrix),rho)
     while found:
         update_flow(f,ap,dphi)
         update_ag(ag,ap,dphi)
 
         (found,ap,dphi) = find_path(ag)
     return f 
+
+
+
+
 
 
 
@@ -390,23 +415,23 @@ def main():
     """
     Faits des les appels à WP et EK (et affiche les résultats)
     """
-    """
-    show_graph_with_labels(np.matrix(g.matrix),rho)
+    #"""
+    show_graph_wo_sink(np.matrix(g.matrix),rho)
 
     
     p,w = widest_path(g,sigma["s"],sigma["B"])
-    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    show_graph_wo_sink(np.matrix(g.matrix),rho, p,w)
     
     p,w = widest_path(g,sigma["s"],sigma["D"])
-    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
+    show_graph_wo_sink(np.matrix(g.matrix),rho, p,w)
 
     p,w = widest_path(g,sigma["s"],sigma["M"])
-    show_graph_with_labels(np.matrix(g.matrix),rho, p,w)
-    """
+    show_graph_wo_sink(np.matrix(g.matrix),rho, p,w)
+    
     f = edmond_karp(g,[sigma["B"],sigma["M"], sigma["D"]])
     
-    show_graph_with_labels(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
-    #show_graph_with_labels(np.matrix(f.matrix),rho)
+    show_graph_wo_sink(np.matrix([r[0:len(f.matrix)-1] for r in f.matrix][0:len(f.matrix)-1]),rho)
+    #show_graph_wo_sink(np.matrix(f.matrix),rho)
 
     """
     capa = [
@@ -423,10 +448,10 @@ def main():
     ]
     ex2 = graph(4)
     ex2.matrix = [
-        [0,0,0,0],  
-        [2,0,1,0],
-        [2,0,0,0],
-        [0,2,2,0]              
+        [0,0,1,0],  
+        [2,0,0,1],
+        [1,1,0,0],
+        [0,1,2,0]              
     ]
     ex2.adj = [
         [1,2],
@@ -436,9 +461,9 @@ def main():
     ]
     ex2.s = 0;
     ex2.t = 3;
-    show_example(np.matrix(ex2.matrix))
+    show_example(np.matrix(ex2.matrix), path=[0,2,1,3])
     """
     #slicing pour ne pas afficher le sommet virtuel t
-    
+    #"""
 main()
 
