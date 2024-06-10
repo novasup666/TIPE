@@ -89,7 +89,7 @@ l'une des causes du drame de la Love Parade.
 
 ---
 
-# 2. Modélisation: Graphe de Capacité
+# 2. Modélisation: Graphe de capacité
 
 ---
 ### Graphes de capacités
@@ -181,7 +181,7 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 <div class="article">
 <section> Goulot d'étranglement  </section>
 <section>  <img src="images/zoom.png"> </section>
-<section> Zoom sur le sud-est du graph  </section>
+<section> Zoom sur le sud-est du graphe  </section>
 <section> <img src="images/zoomB.png"></section>
 </div class="article">
 
@@ -192,7 +192,7 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 <div class="article">
 <section> Cannibalisme  </section>
 <section>  <img src="images/zoomD.png"> </section>
-<section> Zoom sur le sud-est du graph </section>
+<section> Zoom sur le sud-est du graphe </section>
 <section> <img src="images/zoomB.png"></section>
 </div class="article">
 
@@ -216,7 +216,7 @@ Algorithme d'Edmond-Karp
 <img src="images/ex.png">
 
 ---
-## Graphes de Flots
+## Graphes de flots
 
 
 
@@ -230,11 +230,11 @@ Le graphe de flot avec $s$ : la source, $t$ : le puit
 
 
 ---
-### Propriétés des Flots: conservation du flot
+### Propriétés des flots: conservation du flot
 ![ex_flot](images/ex_flot.png)
 
 ---
-### Propriétés des Flots: valeur du flot
+### Propriétés des flots: valeur du flot
 ![ex_flot](images/ex_flot.png)
 $V_{\phi} =$ le flot total sortant de s
 
@@ -487,7 +487,7 @@ $\rightarrow O(|V|*|E|²)$
 </div>
 
 ---
-### Code- Graphe de capacité
+### Code - Graphe de capacité
 <div class="columns">
 <div>
 
