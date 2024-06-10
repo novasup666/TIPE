@@ -92,7 +92,7 @@ l'une des causes du drame de la Love Parade.
 # 2. Modélisation: Graphe de capacité
 
 ---
-### Graphes de capacités
+### Graphe de capacité
 Soit $G_c = (V,E, C)$ un graphe non orienté pondéré par:
 
 $C : E \rightarrow \mathbb{N}$ la capacité de chaque arête.
@@ -100,7 +100,7 @@ $C : E \rightarrow \mathbb{N}$ la capacité de chaque arête.
 Le graphe des capacités.
 
 ---
-### Modélisations de la capacité
+### Modélisation de la capacité
 
 <div class="columns">
 <div>
@@ -198,7 +198,7 @@ Chemin le plus large entre le stade et le RER D, largeur 4
 
 ---
 
-## Annalyse de la solution
+## Analyse de la solution
 Largeur théorique : $3+4+7 = 14$
 Débit théorique : $28 pers/s$
 
@@ -208,17 +208,15 @@ Débit réel : $20 pers/s$
 Temps d'évacuation : 1h08
 
 ---
-# 4. Une methode optimale :  Le flot maximal
+# 4. Une méthode optimale :  Le flot maximal
 Algorithme d'Edmond-Karp
 
 ---
-## Graphe d'exemple
+## Graphe d'éxemple
 <img src="images/ex.png">
 
 ---
-## Graphes de flots
-
-
+## Graphe de flot
 
 Soit $\varphi = (V,E,\phi,s,t)$ un graphe orienté pondéré par 
 $\phi : E\rightarrow \mathbb{N}$ le flot passant dans chaque arètes.
@@ -383,7 +381,7 @@ Valeur du flot : $23$, débit : $46 pers/s$, temps :$30min$
 ![flot final](images/final_flow.png)
 
 ---
-# 5. Analyse des Résultats
+# 5. Analyse des résultats
 
 ---
 ## Comparaison W-P v. E-K
@@ -452,12 +450,12 @@ $\rightarrow O(|V|*|E|²)$
 <div class="columns">
 <div>
 
-![alt text](code_images/image-12.png)
+![alt text](code_images/image-24.png)
 
 </div>
 <div>
 
-![alt text](code_images/image-13.png)
+![alt text](code_images/image-23.png)
 
 </div>
 
