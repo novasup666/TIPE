@@ -26,13 +26,15 @@ Noé VINCENT
 
 ---
 ## Comment utiliser la théorie des graphes pour définir les itinéraires piétons aux alentours du stade  de France ?
+
+En cherchant à :
 - maintenir la sécurité des spectateurs.
 - le plus efficacement.
 
 ---
 # Plan
 1. Analyse de la situation
-2. Modélisation: Graphe de Capacité
+2. Modélisation: Graphe de capacité
 3. Une méthode naïve
 4. Une méthode optimale: le flot maximal
 4. Analyse des résultats
@@ -43,7 +45,7 @@ Noé VINCENT
 # 1. Analyse de la situation
 
 ---
-# Situation Géographique
+# Situation géographique
 
 <div class="columns">
 <div>
@@ -150,11 +152,11 @@ $p \subset E$
 $C(p) = min\left\{C(e), e \in p\right\}$
 
 
-### L'algorithme de dijkstra
+### L'algorithme de Dijkstra
 Chemin de poids minimal dans un graphe.
 
 ### Algorithme Widest Path
-Algorithme de dijkstra modifié $\rightarrow$ chemin de capacité maximale 
+Algorithme de Dijkstra modifié $\rightarrow$ chemin de capacité maximale 
 
 ---
 ### Proposition de solution
@@ -212,7 +214,7 @@ Temps d'évacuation : 1h08
 Algorithme d'Edmond-Karp
 
 ---
-## Graphe d'éxemple
+## Graphe d'exemple
 <img src="images/ex.png">
 
 ---
@@ -341,7 +343,7 @@ Trouver des chemins augmentants dans $G_a$ afin d'augmenter le flux.
 
 ---
 ## Algorithme d'Edmond-Karp
-### Recherche du Chemin augmentant
+### Recherche du chemin augmentant
 Parcours en largeur : plus court chemin en nombre d'arc
 
 -> Compléxité en $O(|V|*|E|²)$
@@ -364,12 +366,12 @@ $\forall e =(u,v) \in p, C_r(v,u) \leftarrow C_r(v,u) + d\phi$
 
 
 ---
-## Dans le cas du stade de France
+## Dans le cas du Stade de France
 Capacité proportionnelle à la largeur de la rue.
+La source : le Stade de France
 Le puit: un noeud fictif relié par des arêtes de capacité maximale aux stations de transport en commun.
-La source : Le stade de France
 Objectif: 
-- Le flot (un débit de personne) maximal, pour évacuer le plus éfficacement la foule.
+- Le flot (un débit de personne) maximal, pour évacuer le plus efficacement la foule.
 ---
 ### Graphe de capacité
 ![alt text](images/fin_graph.png)
@@ -385,7 +387,7 @@ Valeur du flot : $23$, débit : $46 pers/s$, temps :$30min$
 
 ---
 ## Comparaison W-P v. E-K
-- Pas de Cannibalisme.
+- Pas de cannibalisme.
 - Pas de goulot détranglement.
 - Performance:
   E-K 2 fois plus rapide pour le même niveau de sécurité
